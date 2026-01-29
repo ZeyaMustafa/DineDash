@@ -6,10 +6,19 @@ import { Globe } from 'lucide-react';
 const LanguageToggle = () => {
   const { i18n } = useTranslation();
 
+  const getCurrentLang = () => {
+    // Handle language codes like 'en-US' by getting just the first part
+    const lang = i18n.language || 'en';
+    return lang.startsWith('hi') ? 'hi' : 'en';
+  };
+
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'hi' : 'en';
+    const currentLang = getCurrentLang();
+    const newLang = currentLang === 'en' ? 'hi' : 'en';
     i18n.changeLanguage(newLang);
   };
+
+  const currentLang = getCurrentLang();
 
   return (
     <Button
@@ -18,11 +27,11 @@ const LanguageToggle = () => {
       onClick={toggleLanguage}
       className="flex items-center gap-2"
       data-testid="language-toggle"
-      aria-label={`Switch to ${i18n.language === 'en' ? 'Hindi' : 'English'}`}
+      aria-label={`Switch to ${currentLang === 'en' ? 'Hindi' : 'English'}`}
     >
       <Globe className="w-4 h-4" />
       <span className="text-sm font-medium">
-        {i18n.language === 'en' ? 'हिंदी' : 'English'}
+        {currentLang === 'en' ? 'हिंदी' : 'English'}
       </span>
     </Button>
   );
