@@ -189,6 +189,7 @@ const RestaurantPage = () => {
               <h1 className="font-heading text-2xl font-bold text-primary">DineDash</h1>
             </div>
             <div className="flex items-center gap-4">
+              <LanguageToggle />
               {isAuthenticated ? (
                 <>
                   {isCustomer && (
