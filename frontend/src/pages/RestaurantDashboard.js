@@ -553,7 +553,7 @@ const RestaurantDashboard = () => {
                       {category.items && category.items.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {category.items.map((item) => (
-                            <div key={item.item_id} className="flex gap-4 p-4 border border-border rounded-lg">
+                            <div key={item.item_id} className="flex gap-4 p-4 border border-border rounded-lg relative group">
                               <img
                                 src={item.image_url}
                                 alt={item.name}
@@ -567,7 +567,18 @@ const RestaurantDashboard = () => {
                                   </span>
                                 </div>
                                 <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                                <p className="font-bold text-primary">₹{item.price}</p>
+                                <div className="flex items-center justify-between">
+                                  <p className="font-bold text-primary">₹{item.price}</p>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleDeleteMenuItem(item.item_id)}
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity text-error hover:text-error hover:bg-error/10"
+                                    data-testid={`delete-item-${item.item_id}`}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               </div>
                             </div>
                           ))}
