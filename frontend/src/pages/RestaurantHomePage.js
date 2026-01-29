@@ -147,7 +147,7 @@ const RestaurantHomePage = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <button
-            onClick={() => navigate('/restaurant-dashboard')}
+            onClick={() => navigate('/restaurant-dashboard?tab=orders')}
             className="bg-primary text-white p-8 rounded-xl shadow-card hover:shadow-hover transition-all group"
             data-testid="manage-orders-button"
           >
@@ -157,7 +157,7 @@ const RestaurantHomePage = () => {
           </button>
 
           <button
-            onClick={() => navigate('/restaurant-dashboard')}
+            onClick={() => navigate('/restaurant-dashboard?tab=menu')}
             className="bg-secondary text-white p-8 rounded-xl shadow-card hover:shadow-hover transition-all group"
             data-testid="manage-menu-button"
           >
@@ -167,7 +167,7 @@ const RestaurantHomePage = () => {
           </button>
 
           <button
-            onClick={() => navigate('/restaurant-dashboard')}
+            onClick={() => navigate('/restaurant-dashboard?tab=reservations')}
             className="bg-accent text-white p-8 rounded-xl shadow-card hover:shadow-hover transition-all group"
             data-testid="manage-reservations-button"
           >
