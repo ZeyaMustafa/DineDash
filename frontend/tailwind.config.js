@@ -13,39 +13,39 @@ module.exports = {
                         sm: 'calc(0.75rem - 4px)'
                 },
                 colors: {
-                        background: '#FDFBF7',
-                        foreground: '#1A1A1A',
+                        background: '#F4E1D2',
+                        foreground: '#2B1C10',
                         card: {
-                                DEFAULT: '#FFFFFF',
-                                foreground: '#1A1A1A'
+                                DEFAULT: '#E1D4C1',
+                                foreground: '#2B1C10'
                         },
                         popover: {
-                                DEFAULT: '#FFFFFF',
-                                foreground: '#1A1A1A'
+                                DEFAULT: '#E1D4C1',
+                                foreground: '#2B1C10'
                         },
                         primary: {
-                                DEFAULT: '#E65100',
+                                DEFAULT: '#6E493A',
                                 foreground: '#FFFFFF'
                         },
                         secondary: {
-                                DEFAULT: '#F5F5F0',
-                                foreground: '#1A1A1A'
+                                DEFAULT: '#987284',
+                                foreground: '#FFFFFF'
                         },
                         muted: {
-                                DEFAULT: '#F0EFEA',
-                                foreground: '#666666'
+                                DEFAULT: '#E1D4C1',
+                                foreground: '#2B1C10'
                         },
                         accent: {
-                                DEFAULT: '#4D7C0F',
+                                DEFAULT: '#987284',
                                 foreground: '#FFFFFF'
                         },
                         destructive: {
                                 DEFAULT: '#DC2626',
                                 foreground: '#FFFFFF'
                         },
-                        border: '#E5E5E5',
-                        input: '#F0F0F0',
-                        ring: '#E65100',
+                        border: '#D4C4B0',
+                        input: '#E1D4C1',
+                        ring: '#6E493A',
                         success: '#4D7C0F',
                         warning: '#F59E0B',
                         error: '#DC2626',
@@ -57,9 +57,9 @@ module.exports = {
                         mono: ['JetBrains Mono', 'monospace']
                 },
                 boxShadow: {
-                        card: '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        hover: '0 10px 40px -10px rgba(0, 0, 0, 0.1)',
-                        dropdown: '0 10px 30px -5px rgba(0, 0, 0, 0.1)'
+                        card: '0 4px 20px -2px rgba(110, 73, 58, 0.08)',
+                        hover: '0 10px 40px -10px rgba(110, 73, 58, 0.15)',
+                        dropdown: '0 10px 30px -5px rgba(110, 73, 58, 0.12)'
                 },
                 keyframes: {
                         'accordion-down': {
