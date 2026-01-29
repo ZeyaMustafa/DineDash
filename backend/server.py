@@ -455,6 +455,18 @@ async def get_menu_categories(restaurant_id: str):
     categories = await db.menu_categories.find({"restaurant_id": restaurant_id}, {"_id": 0}).to_list(100)
     return categories
 
+@api_router.delete("/restaurants/{restaurant_id}/items/{item_id}")
+async def delete_menu_item(restaurant_id: str, item_id: str, current_user: dict = Depends(get_current_restaurant_user)):
+    restaurant = await db.restaurants.find_one({"restaurant_id": restaurant_id, "owner_id": current_user['user_id']}, {"_id": 0})
+    if not restaurant:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    result = await db.menu_items.delete_one({"item_id": item_id, "restaurant_id": restaurant_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Menu item not found")
+    
+    return {"message": "Menu item deleted successfully"}
+
 # ============= ORDER ROUTES =============
 
 @api_router.post("/orders", response_model=Order)
