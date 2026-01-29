@@ -510,14 +510,45 @@ async def update_order_status(order_id: str, status_update: OrderStatusUpdate, c
     if not restaurant:
         raise HTTPException(status_code=403, detail="Access denied")
     
-    await db.orders.update_one({"order_id": order_id}, {"$set": {"status": status_update.status}})
+    # Update status timestamps
+    status_timestamps = order.get('status_timestamps', {})
+    now = datetime.now(timezone.utc)
+    status_timestamps[status_update.status] = now.isoformat()
+    
+    # Calculate new ETA based on status
+    eta_minutes = {
+        'ACCEPTED': 35,
+        'PREPARING': 25,
+        'OUT_FOR_DELIVERY': 15,
+        'DELIVERED': 0
+    }
+    new_eta = None
+    if status_update.status in eta_minutes:
+        new_eta = (now + timedelta(minutes=eta_minutes[status_update.status])).isoformat()
+    
+    update_data = {
+        "status": status_update.status,
+        "status_timestamps": status_timestamps,
+        "updated_at": now.isoformat()
+    }
+    if new_eta:
+        update_data["estimated_delivery_time"] = new_eta
+    
+    await db.orders.update_one({"order_id": order_id}, {"$set": update_data})
     
     user = await db.users.find_one({"user_id": order['user_id']}, {"_id": 0})
     if user and user.get('email'):
+        status_labels = {
+            'ACCEPTED': 'Order Accepted',
+            'PREPARING': 'Order Preparation Started',
+            'OUT_FOR_DELIVERY': 'Your order is on the way',
+            'DELIVERED': 'Order Delivered',
+            'CANCELLED': 'Order Cancelled'
+        }
         await send_email_notification(
             user['email'],
             f"Order Update - DineDash Reserve",
-            f"<h2>Order #{order_id[:8]}</h2><p>Status: {status_update.status}</p>"
+            f"<h2>Order #{order_id[:8]}</h2><p>Status: {status_labels.get(status_update.status, status_update.status)}</p>"
         )
     if order.get('delivery_phone'):
         await send_sms_notification(order['delivery_phone'], f"Order status updated: {status_update.status}")
