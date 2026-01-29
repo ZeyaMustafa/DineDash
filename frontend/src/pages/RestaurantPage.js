@@ -22,6 +22,7 @@ const RestaurantPage = () => {
   const navigate = useNavigate();
   const { user, token, logout, isAuthenticated, isCustomer, isRestaurant } = useAuth();
   const { addToCart, cart, getTotalItems } = useCart();
+  const { t } = useTranslation();
   const [restaurant, setRestaurant] = useState(null);
   const [menu, setMenu] = useState([]);
   const [dietFilter, setDietFilter] = useState('all');
