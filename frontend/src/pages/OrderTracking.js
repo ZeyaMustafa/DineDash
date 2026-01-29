@@ -109,6 +109,14 @@ const OrderTracking = () => {
             </div>
 
             <div className="border-t border-border pt-6 space-y-4">
+              {order.estimated_delivery_time && order.status !== 'DELIVERED' && (
+                <div className="bg-primary/5 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground">Estimated Delivery Time</p>
+                  <p className="text-xl font-bold text-primary">
+                    {new Date(order.estimated_delivery_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+              )}
               <div>
                 <p className="text-sm text-muted-foreground">Delivery Address</p>
                 <p data-testid="delivery-address">{order.delivery_address}</p>
