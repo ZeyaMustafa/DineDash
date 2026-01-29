@@ -51,7 +51,7 @@ const RestaurantPage = () => {
       setRestaurant(response.data);
     } catch (error) {
       console.error('Error fetching restaurant:', error);
-      toast.error('Restaurant not found');
+      toast.error(t('messages.restaurantNotFound'));
       navigate('/');
     } finally {
       setLoading(false);
@@ -71,12 +71,12 @@ const RestaurantPage = () => {
 
   const handleAddToCart = (item) => {
     if (!isAuthenticated) {
-      toast.error('Please login to add items to cart');
+      toast.error(t('messages.loginRequired'));
       navigate('/customer-auth');
       return;
     }
     addToCart(item, restaurant);
-    toast.success(`${item.name} added to cart!`);
+    toast.success(t('messages.itemAdded', { name: item.name }));
   };
 
   const getItemQuantity = (itemId) => {
@@ -86,7 +86,7 @@ const RestaurantPage = () => {
 
   const checkAvailability = async () => {
     if (!reservationData.date || !reservationData.time) {
-      toast.error('Please select date and time');
+      toast.error(t('messages.selectDateTime'));
       return;
     }
 
@@ -100,12 +100,12 @@ const RestaurantPage = () => {
       });
       setAvailability(response.data);
       if (response.data.available) {
-        toast.success(`${response.data.available_seats} seats available!`);
+        toast.success(t('restaurant.page.available', { seats: response.data.available_seats }));
       } else {
-        toast.error('No seats available for this slot');
+        toast.error(t('messages.noSeatsAvailable'));
       }
     } catch (error) {
-      toast.error('Error checking availability');
+      toast.error(t('messages.failedToLoad'));
     } finally {
       setCheckingAvailability(false);
     }
@@ -113,18 +113,18 @@ const RestaurantPage = () => {
 
   const handleReservation = async () => {
     if (!isAuthenticated) {
-      toast.error('Please login to make a reservation');
+      toast.error(t('messages.loginRequired'));
       navigate('/customer-auth');
       return;
     }
 
     if (!isCustomer) {
-      toast.error('Only customers can make reservations');
+      toast.error(t('messages.onlyCustomersReserve'));
       return;
     }
 
     if (!availability || !availability.available) {
-      toast.error('Please check availability first');
+      toast.error(t('messages.checkAvailabilityFirst'));
       return;
     }
 
@@ -166,7 +166,7 @@ const RestaurantPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">{t('common.loading')}</p>
       </div>
     );
   }
