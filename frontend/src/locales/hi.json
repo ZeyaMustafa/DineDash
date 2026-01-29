@@ -1,0 +1,317 @@
+{
+  "common": {
+    "appName": "डाइनडैश",
+    "back": "वापस",
+    "backToHome": "होम पर वापस",
+    "login": "लॉगिन",
+    "signup": "साइन अप",
+    "logout": "लॉगआउट",
+    "submit": "जमा करें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "add": "जोड़ें",
+    "search": "खोजें",
+    "loading": "लोड हो रहा है...",
+    "noData": "कोई डेटा उपलब्ध नहीं",
+    "error": "त्रुटि",
+    "success": "सफलता"
+  },
+  "navbar": {
+    "favorites": "पसंदीदा",
+    "cart": "कार्ट",
+    "profile": "नमस्ते, {{name}}",
+    "dashboard": "डैशबोर्ड पर जाएं",
+    "customerLogin": "ग्राहक लॉगिन",
+    "restaurantLogin": "रेस्तरां लॉगिन"
+  },
+  "home": {
+    "hero": {
+      "title": "ऑर्डर करें। आरक्षित करें। आनंद लें।",
+      "subtitle": "डिलीवरी और डाइन-इन आरक्षण के लिए सर्वोत्तम रेस्तरां खोजें"
+    },
+    "search": "रेस्तरां खोजें...",
+    "filters": {
+      "all": "सभी",
+      "delivery": "डिलीवरी",
+      "reservations": "आरक्षण",
+      "veg": "केवल शाकाहारी",
+      "nonVeg": "मांसाहारी",
+      "allCuisines": "सभी व्यंजन"
+    },
+    "noRestaurants": "कोई रेस्तरां नहीं मिला",
+    "tryAdjust": "अपने फ़िल्टर या खोज क्वेरी को समायोजित करने का प्रयास करें",
+    "clearFilters": "फ़िल्टर साफ़ करें",
+    "browseRestaurants": "रेस्तरां ब्राउज़ करें",
+    "deliveryTime": "{{min}}-{{max}} मिनट",
+    "reviews": "{{count}} समीक्षाएं"
+  },
+  "auth": {
+    "customer": {
+      "title": "ग्राहक लॉगिन",
+      "subtitle": "भोजन ऑर्डर करें या आरक्षण बुक करें"
+    },
+    "restaurant": {
+      "title": "रेस्तरां पोर्टल",
+      "subtitle": "अपने रेस्तरां का प्रबंधन करें",
+      "detailsTitle": "रेस्तरां विवरण",
+      "detailsSubtitle": "हमें अपने रेस्तरां के बारे में बताएं"
+    },
+    "name": "नाम",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "phone": "फोन",
+    "phoneOptional": "फोन (वैकल्पिक)",
+    "loginTab": "लॉगिन",
+    "signupTab": "साइन अप",
+    "processing": "प्रोसेस हो रहा है...",
+    "loginButton": "लॉगिन",
+    "signupButton": "साइन अप",
+    "nextButton": "अगला",
+    "backButton": "वापस",
+    "createRestaurant": "रेस्तरां बनाएं",
+    "creating": "बना रहे हैं...",
+    "loginSuccess": "लॉगिन सफल!",
+    "accountCreated": "खाता सफलतापूर्वक बनाया गया!",
+    "addRestaurantDetails": "अब अपने रेस्तरां का विवरण जोड़ें",
+    "restaurantCreated": "रेस्तरां प्रोफ़ाइल सफलतापूर्वक बनाई गई!"
+  },
+  "restaurant": {
+    "details": {
+      "name": "रेस्तरां का नाम",
+      "description": "विवरण",
+      "cuisine": "व्यंजन प्रकार",
+      "cuisinePlaceholder": "उदा., इटैलियन, भारतीय, चीनी",
+      "address": "पता",
+      "phone": "रेस्तरां फोन",
+      "serviceType": "सेवा प्रकार",
+      "deliveryOnly": "केवल डिलीवरी",
+      "reservationsOnly": "केवल आरक्षण",
+      "both": "डिलीवरी और आरक्षण दोनों",
+      "foodType": "भोजन प्रकार",
+      "veg": "शाकाहारी",
+      "nonVeg": "मांसाहारी"
+    },
+    "page": {
+      "menu": "मेनू",
+      "orderDelivery": "डिलीवरी ऑर्डर करें",
+      "reserveSeats": "सीट आरक्षित करें",
+      "bookTable": "टेबल बुक करें",
+      "date": "तारीख",
+      "time": "समय",
+      "partySize": "पार्टी आकार",
+      "person": "व्यक्ति",
+      "people": "लोग",
+      "checkAvailability": "उपलब्धता जांचें",
+      "checking": "जांच रहे हैं...",
+      "available": "उपलब्ध! {{seats}} सीटें शेष",
+      "minPayment": "न्यूनतम भुगतान: ₹300",
+      "bookReservation": "आरक्षण बुक करें और भुगतान करें",
+      "addToCart": "कार्ट में जोड़ें",
+      "inCart": "कार्ट में {{quantity}}",
+      "addMore": "और जोड़ें"
+    },
+    "badges": {
+      "delivers": "डिलीवरी",
+      "reservations": "आरक्षण",
+      "both": "दोनों"
+    }
+  },
+  "cart": {
+    "title": "चेकआउट",
+    "orderFrom": "{{name}} से ऑर्डर करें",
+    "deliveryDetails": "डिलीवरी विवरण",
+    "deliveryAddress": "डिलीवरी पता",
+    "deliveryAddressPlaceholder": "अपना डिलीवरी पता दर्ज करें",
+    "phoneNumber": "फोन नंबर",
+    "phoneNumberPlaceholder": "अपना फोन नंबर दर्ज करें",
+    "orderNotes": "ऑर्डर नोट्स (वैकल्पिक)",
+    "orderNotesPlaceholder": "कोई विशेष निर्देश?",
+    "paymentMethod": "भुगतान विधि",
+    "cod": "कैश ऑन डिलीवरी",
+    "stripe": "कार्ड से भुगतान करें (Stripe)",
+    "orderSummary": "ऑर्डर सारांश",
+    "subtotal": "उप-योग",
+    "deliveryFee": "डिलीवरी शुल्क",
+    "total": "कुल",
+    "placeOrder": "ऑर्डर दें",
+    "processing": "प्रोसेस हो रहा है...",
+    "emptyCart": "आपकी कार्ट खाली है",
+    "items": "{{count}} आइटम"
+  },
+  "order": {
+    "tracking": {
+      "title": "ऑर्डर ट्रैकिंग",
+      "orderId": "ऑर्डर आईडी",
+      "orderItems": "ऑर्डर आइटम",
+      "qty": "मात्रा: {{quantity}}",
+      "deliveryTo": "डिलीवरी:",
+      "estimatedTime": "अनुमानित डिलीवरी समय"
+    },
+    "status": {
+      "placed": "ऑर्डर प्लेस किया गया",
+      "accepted": "ऑर्डर स्वीकृत",
+      "preparing": "ऑर्डर तैयारी",
+      "outForDelivery": "रास्ते में",
+      "delivered": "डिलीवर किया गया",
+      "cancelled": "रद्द किया गया"
+    },
+    "details": {
+      "address": "डिलीवरी पता",
+      "phone": "फोन",
+      "total": "कुल राशि",
+      "paymentMethod": "भुगतान विधि",
+      "paymentStatus": "भुगतान स्थिति"
+    }
+  },
+  "reservation": {
+    "tracking": {
+      "title": "आरक्षण विवरण",
+      "reservationId": "आरक्षण आईडी",
+      "date": "तारीख",
+      "time": "समय",
+      "partySize": "{{size}} लोग",
+      "amountPaid": "भुगतान की गई राशि",
+      "paymentStatus": "भुगतान स्थिति"
+    },
+    "status": {
+      "pendingPayment": "भुगतान लंबित",
+      "confirmed": "पुष्ट",
+      "seated": "बैठाया गया",
+      "completed": "पूर्ण",
+      "cancelled": "रद्द",
+      "noShow": "नहीं आए"
+    }
+  },
+  "profile": {
+    "title": "मेरा खाता",
+    "hello": "नमस्ते, {{name}}!",
+    "orders": "मेरे ऑर्डर",
+    "reservations": "मेरे आरक्षण",
+    "orderHistory": "ऑर्डर इतिहास",
+    "reservationHistory": "आरक्षण इतिहास",
+    "noOrders": "अभी तक कोई ऑर्डर नहीं",
+    "noReservations": "अभी तक कोई आरक्षण नहीं"
+  },
+  "favorites": {
+    "title": "मेरे पसंदीदा",
+    "saved": "{{count}} सहेजे गए रेस्तरां",
+    "noFavorites": "अभी तक कोई पसंदीदा नहीं",
+    "startAdding": "यहां देखने के लिए रेस्तरां को अपने पसंदीदा में जोड़ना शुरू करें",
+    "removed": "पसंदीदा से हटाया गया",
+    "added": "पसंदीदा में जोड़ा गया"
+  },
+  "restaurantHome": {
+    "noRestaurant": "कोई रेस्तरां नहीं मिला",
+    "createProfile": "कृपया अपना रेस्तरां प्रोफ़ाइल बनाएं",
+    "createButton": "रेस्तरां बनाएं",
+    "stats": {
+      "totalRevenue": "कुल राजस्व",
+      "pendingOrders": "लंबित ऑर्डर",
+      "totalOrders": "कुल ऑर्डर"
+    },
+    "actions": {
+      "manageOrders": "ऑर्डर प्रबंधित करें",
+      "manageOrdersDesc": "ऑर्डर स्थिति देखें और अपडेट करें",
+      "manageMenu": "मेनू प्रबंधित करें",
+      "manageMenuDesc": "मेनू आइटम जोड़ें या संपादित करें",
+      "reservations": "आरक्षण",
+      "reservationsDesc": "टेबल बुकिंग प्रबंधित करें"
+    },
+    "menu": {
+      "title": "आपका मेनू",
+      "categories": "{{count}} श्रेणियां",
+      "items": "{{count}} आइटम",
+      "editMenu": "मेनू संपादित करें",
+      "noItems": "अभी तक कोई मेनू आइटम नहीं",
+      "addItems": "मेनू आइटम जोड़ें",
+      "noCategory": "इस श्रेणी में कोई आइटम नहीं"
+    }
+  },
+  "dashboard": {
+    "title": "रेस्तरां डैशबोर्ड",
+    "tabs": {
+      "orders": "ऑर्डर",
+      "reservations": "आरक्षण",
+      "menu": "मेनू प्रबंधन"
+    },
+    "orders": {
+      "current": "वर्तमान ऑर्डर ({{count}})",
+      "noOrders": "अभी तक कोई ऑर्डर नहीं",
+      "markPrepared": "तैयार के रूप में चिह्नित करें",
+      "items": "आइटम: {{count}}",
+      "address": "पता: {{address}}",
+      "phone": "फोन: {{phone}}",
+      "payment": "भुगतान: {{method}} ({{status}})"
+    },
+    "reservations": {
+      "title": "आरक्षण ({{count}})",
+      "noReservations": "अभी तक कोई आरक्षण नहीं",
+      "people": "{{size}} लोग",
+      "amount": "राशि: ₹{{amount}}",
+      "payment": "भुगतान: {{status}}"
+    },
+    "menu": {
+      "title": "मेनू प्रबंधन",
+      "addCategory": "श्रेणी जोड़ें",
+      "addMenuItem": "मेनू आइटम जोड़ें",
+      "noCategories": "अभी तक कोई मेनू श्रेणी नहीं। शुरू करने के लिए एक जोड़ें!",
+      "noItemsInCategory": "इस श्रेणी में अभी तक कोई आइटम नहीं। आइटम जोड़ने के लिए \"मेनू आइटम जोड़ें\" का उपयोग करें।",
+      "categoryName": "श्रेणी का नाम",
+      "category": "श्रेणी",
+      "selectCategory": "श्रेणी चुनें",
+      "itemName": "आइटम का नाम",
+      "description": "विवरण",
+      "price": "मूल्य (₹)",
+      "foodType": "भोजन प्रकार",
+      "veg": "शाकाहारी",
+      "nonVeg": "मांसाहारी",
+      "imageUrl": "छवि URL (वैकल्पिक)",
+      "imageUrlPlaceholder": "रैंडम फूड इमेज के लिए खाली छोड़ें",
+      "imageUrlHelper": "यदि खाली छोड़ दिया जाता है, तो एक रैंडम फूड इमेज का उपयोग किया जाएगा",
+      "addItem": "आइटम जोड़ें",
+      "deleteConfirm": "क्या आप वाकई इस आइटम को हटाना चाहते हैं?",
+      "itemAdded": "मेनू आइटम जोड़ा गया!",
+      "itemDeleted": "मेनू आइटम हटाया गया!",
+      "categoryAdded": "श्रेणी जोड़ी गई!",
+      "addCategoryTitle": "मेनू श्रेणी जोड़ें",
+      "addMenuItemTitle": "मेनू आइटम जोड़ें"
+    }
+  },
+  "payment": {
+    "success": {
+      "title": "भुगतान सफल!",
+      "message": "आपका भुगतान सफलतापूर्वक प्रोसेस किया गया है।",
+      "transactionId": "लेनदेन आईडी",
+      "amount": "राशि",
+      "goHome": "होम पर जाएं",
+      "verifying": "भुगतान सत्यापित हो रहा है...",
+      "unknownStatus": "भुगतान स्थिति अज्ञात",
+      "checkEmail": "हमें आपके भुगतान को सत्यापित करने में परेशानी हो रही है। कृपया पुष्टि के लिए अपना ईमेल जांचें।"
+    },
+    "cancel": {
+      "title": "भुगतान रद्द",
+      "message": "आपका भुगतान रद्द कर दिया गया। कोई शुल्क नहीं लिया गया।",
+      "goBack": "वापस जाएं",
+      "goHome": "होम पर जाएं"
+    }
+  },
+  "messages": {
+    "loginRequired": "कृपया कार्ट में आइटम जोड़ने के लिए लॉगिन करें",
+    "itemAdded": "{{name}} कार्ट में जोड़ा गया!",
+    "orderPlaced": "ऑर्डर सफलतापूर्वक दिया गया!",
+    "orderStatusUpdated": "ऑर्डर स्थिति अपडेट की गई",
+    "reservationStatusUpdated": "आरक्षण स्थिति अपडेट की गई",
+    "favoriteAdded": "पसंदीदा में जोड़ा गया",
+    "favoriteRemoved": "पसंदीदा से हटाया गया",
+    "failedToLoad": "डेटा लोड करने में विफल",
+    "failedToUpdate": "अपडेट करने में विफल",
+    "restaurantNotFound": "रेस्तरां नहीं मिला",
+    "fillDeliveryDetails": "कृपया डिलीवरी विवरण भरें",
+    "selectDateTime": "कृपया तारीख और समय चुनें",
+    "noSeatsAvailable": "इस स्लॉट के लिए कोई सीट उपलब्ध नहीं",
+    "checkAvailabilityFirst": "कृपया पहले उपलब्धता जांचें",
+    "onlyCustomersReserve": "केवल ग्राहक आरक्षण कर सकते हैं"
+  }
+}
