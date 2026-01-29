@@ -256,7 +256,7 @@ const HomePage = () => {
         </div>
       </header>
 
-      <div className="relative h-[60vh] flex items-center justify-center bg-foreground text-white overflow-hidden">
+      <div className="relative h-[60vh] flex items-center justify-center bg-foreground text-white overflow-hidden" style={{ backgroundColor: '#2B1C10' }}>
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         <img
           src="https://images.unsplash.com/photo-1687945512099-400cbe94460c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjByZXN0YXVyYW50JTIwaW50ZXJpb3IlMjBkZXNpZ258ZW58MHx8fHwxNzY5NjkyNzI5fDA&ixlib=rb-4.1.0&q=85"
