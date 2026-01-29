@@ -7,7 +7,7 @@ const PaymentCancel = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDFBF7' }}>
+    <div className="min-h-screen flex items-center justify-center" className="bg-background">
       <div className="text-center max-w-md">
         <XCircle className="w-24 h-24 text-error mx-auto mb-6" data-testid="cancel-icon" />
         <h1 className="font-heading text-4xl font-bold mb-4">Payment Cancelled</h1>

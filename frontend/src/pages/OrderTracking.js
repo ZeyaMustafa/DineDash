@@ -59,7 +59,7 @@ const OrderTracking = () => {
   const currentStepIndex = statusSteps.findIndex(step => step.key === order.status);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FDFBF7' }}>
+    <div className="min-h-screen" className="bg-background">
       <header className="bg-white border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 md:px-8 py-4">
           <Button variant="ghost" onClick={() => navigate('/')} data-testid="back-button">

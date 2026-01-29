@@ -206,7 +206,7 @@ const RestaurantDashboard = () => {
 
   if (restaurants.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDFBF7' }}>
+      <div className="min-h-screen flex items-center justify-center" className="bg-background">
         <div className="text-center">
           <h2 className="font-heading text-3xl font-bold mb-4">No Restaurant Found</h2>
           <p className="text-muted-foreground mb-6">Please create a restaurant profile first</p>
@@ -217,7 +217,7 @@ const RestaurantDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FDFBF7' }}>
+    <div className="min-h-screen" className="bg-background">
       <header className="bg-white border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
           <Button variant="ghost" onClick={() => navigate('/')} data-testid="back-button">

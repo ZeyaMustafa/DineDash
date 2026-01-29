@@ -76,7 +76,7 @@ const PaymentSuccess = () => {
 
   if (status === 'checking') {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDFBF7' }}>
+      <div className="min-h-screen flex items-center justify-center" className="bg-background">
         <div className="text-center">
           <p className="text-xl text-muted-foreground">Verifying payment...</p>
         </div>
@@ -86,7 +86,7 @@ const PaymentSuccess = () => {
 
   if (status === 'success') {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDFBF7' }}>
+      <div className="min-h-screen flex items-center justify-center" className="bg-background">
         <div className="text-center max-w-md">
           <CheckCircle className="w-24 h-24 text-success mx-auto mb-6" data-testid="success-icon" />
           <h1 className="font-heading text-4xl font-bold mb-4">Payment Successful!</h1>
@@ -108,7 +108,7 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDFBF7' }}>
+    <div className="min-h-screen flex items-center justify-center" className="bg-background">
       <div className="text-center max-w-md">
         <h1 className="font-heading text-4xl font-bold mb-4">Payment Status Unknown</h1>
         <p className="text-muted-foreground mb-8">
