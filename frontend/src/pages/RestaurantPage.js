@@ -287,22 +287,22 @@ const RestaurantPage = () => {
         {(showDelivery && showReservations) ? (
           <Tabs defaultValue="delivery" className="space-y-8">
             <TabsList className="grid w-full md:w-96 grid-cols-2">
-              <TabsTrigger value="delivery" data-testid="delivery-tab">Order Delivery</TabsTrigger>
-              <TabsTrigger value="reservation" data-testid="reservation-tab">Reserve Seats</TabsTrigger>
+              <TabsTrigger value="delivery" data-testid="delivery-tab">{t('restaurant.page.orderDelivery')}</TabsTrigger>
+              <TabsTrigger value="reservation" data-testid="reservation-tab">{t('restaurant.page.reserveSeats')}</TabsTrigger>
             </TabsList>
 
             {showDelivery && (
               <TabsContent value="delivery" className="space-y-8">
                 <div className="flex justify-between items-center">
-                  <h2 className="font-heading text-3xl font-semibold">Menu</h2>
+                  <h2 className="font-heading text-3xl font-semibold">{t('restaurant.page.menu')}</h2>
                   <Select value={dietFilter} onValueChange={setDietFilter}>
                     <SelectTrigger className="w-48" data-testid="menu-diet-filter">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="veg">Veg Only</SelectItem>
-                      <SelectItem value="non_veg">Non-Veg</SelectItem>
+                      <SelectItem value="all">{t('home.filters.all')}</SelectItem>
+                      <SelectItem value="veg">{t('home.filters.veg')}</SelectItem>
+                      <SelectItem value="non_veg">{t('home.filters.nonVeg')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -332,9 +332,9 @@ const RestaurantPage = () => {
                               <div className="flex items-start justify-between mb-2">
                                 <h4 className="font-semibold text-lg">{item.name}</h4>
                                 {item.is_veg ? (
-                                  <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded">Veg</span>
+                                  <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded">{t('restaurant.details.veg')}</span>
                                 ) : (
-                                  <span className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded">Non-Veg</span>
+                                  <span className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded">{t('restaurant.details.nonVeg')}</span>
                                 )}
                               </div>
                               <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
@@ -343,7 +343,7 @@ const RestaurantPage = () => {
                                 {getItemQuantity(item.item_id) > 0 ? (
                                   <div className="flex items-center gap-2">
                                     <span className="text-sm text-muted-foreground">
-                                      {getItemQuantity(item.item_id)} in cart
+                                      {t('restaurant.page.inCart', { quantity: getItemQuantity(item.item_id) })}
                                     </span>
                                     <Button
                                       size="sm"
@@ -359,7 +359,7 @@ const RestaurantPage = () => {
                                     onClick={() => handleAddToCart(item)}
                                     data-testid={`add-to-cart-${item.item_id}`}
                                   >
-                                    Add to Cart
+                                    {t('restaurant.page.addToCart')}
                                   </Button>
                                 )}
                               </div>
@@ -376,11 +376,11 @@ const RestaurantPage = () => {
             {showReservations && (
               <TabsContent value="reservation">
                 <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-card border border-border">
-                  <h2 className="font-heading text-3xl font-semibold mb-6">Book a Table</h2>
+                  <h2 className="font-heading text-3xl font-semibold mb-6">{t('restaurant.page.bookTable')}</h2>
                   
                   <div className="space-y-6">
                     <div>
-                      <Label htmlFor="date">Date</Label>
+                      <Label htmlFor="date">{t('restaurant.page.date')}</Label>
                       <Input
                         id="date"
                         type="date"
@@ -392,7 +392,7 @@ const RestaurantPage = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="time">Time</Label>
+                      <Label htmlFor="time">{t('restaurant.page.time')}</Label>
                       <Input
                         id="time"
                         type="time"
@@ -403,7 +403,7 @@ const RestaurantPage = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="party_size">Party Size</Label>
+                      <Label htmlFor="party_size">{t('restaurant.page.partySize')}</Label>
                       <Select
                         value={String(reservationData.party_size)}
                         onValueChange={(v) => setReservationData({ ...reservationData, party_size: parseInt(v) })}
@@ -413,7 +413,7 @@ const RestaurantPage = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                            <SelectItem key={num} value={String(num)}>{num} {num === 1 ? 'Person' : 'People'}</SelectItem>
+                            <SelectItem key={num} value={String(num)}>{num} {num === 1 ? t('restaurant.page.person') : t('restaurant.page.people')}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -426,13 +426,13 @@ const RestaurantPage = () => {
                       disabled={checkingAvailability}
                       data-testid="check-availability-button"
                     >
-                      {checkingAvailability ? 'Checking...' : 'Check Availability'}
+                      {checkingAvailability ? t('restaurant.page.checking') : t('restaurant.page.checkAvailability')}
                     </Button>
 
                     {availability && availability.available && (
                       <div className="p-4 bg-success/10 text-success rounded-lg" data-testid="availability-info">
-                        <p className="font-semibold">Available! {availability.available_seats} seats remaining</p>
-                        <p className="text-sm mt-2">Minimum payment: ₹300</p>
+                        <p className="font-semibold">{t('restaurant.page.available', { seats: availability.available_seats })}</p>
+                        <p className="text-sm mt-2">{t('restaurant.page.minPayment')}</p>
                       </div>
                     )}
 
@@ -442,7 +442,7 @@ const RestaurantPage = () => {
                       disabled={!availability || !availability.available}
                       data-testid="book-reservation-button"
                     >
-                      Book Reservation & Pay
+                      {t('restaurant.page.bookReservation')}
                     </Button>
                   </div>
                 </div>
