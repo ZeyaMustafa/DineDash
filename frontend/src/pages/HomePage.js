@@ -174,16 +174,16 @@ const HomePage = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFavorites(favorites.filter(id => id !== restaurantId));
-        toast.success('Removed from favorites');
+        toast.success(t('messages.favoriteRemoved'));
       } else {
         await axios.post(`${API}/favorites/${restaurantId}`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFavorites([...favorites, restaurantId]);
-        toast.success('Added to favorites');
+        toast.success(t('messages.favoriteAdded'));
       }
     } catch (error) {
-      toast.error('Failed to update favorites');
+      toast.error(t('messages.failedToUpdate'));
     }
   };
 
