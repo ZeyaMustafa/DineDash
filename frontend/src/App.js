@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import HomePage from './pages/HomePage';
+import RestaurantHomePage from './pages/RestaurantHomePage';
 import RestaurantPage from './pages/RestaurantPage';
 import CustomerAuth from './pages/CustomerAuth';
 import RestaurantAuth from './pages/RestaurantAuth';
@@ -13,8 +14,13 @@ import RestaurantDashboard from './pages/RestaurantDashboard';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
 import { CartProvider } from './context/CartContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import '@/App.css';
+
+const HomeRedirect = () => {
+  const { isRestaurant } = useAuth();
+  return isRestaurant ? <RestaurantHomePage /> : <HomePage />;
+};
 
 function App() {
   return (
@@ -23,7 +29,7 @@ function App() {
         <div className="App">
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<HomeRedirect />} />
               <Route path="/restaurant/:id" element={<RestaurantPage />} />
               <Route path="/customer-auth" element={<CustomerAuth />} />
               <Route path="/restaurant-auth" element={<RestaurantAuth />} />
