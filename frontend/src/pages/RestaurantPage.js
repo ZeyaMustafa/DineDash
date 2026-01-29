@@ -174,13 +174,86 @@ const RestaurantPage = () => {
   const showReservations = restaurant.service_type === 'reservations' || restaurant.service_type === 'both';
 
   return (
-    <div className="min-h-screen" className="bg-background">
-      <header className="bg-white border-b border-border sticky top-0 z-50">
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 md:px-8 py-4">
-          <Button variant="ghost" onClick={() => navigate('/')} data-testid="back-button">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/')} data-testid="back-button">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+              <h1 className="font-heading text-2xl font-bold text-primary">DineDash</h1>
+            </div>
+            <div className="flex items-center gap-4">
+              {isAuthenticated ? (
+                <>
+                  {isCustomer && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate('/favorites')}
+                        data-testid="favorites-button"
+                      >
+                        <Heart className="w-4 h-4 mr-2" />
+                        Favorites
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate('/cart')}
+                        className="relative"
+                        data-testid="cart-button"
+                      >
+                        <ShoppingCart className="w-4 h-4 mr-2" />
+                        Cart
+                        {getTotalItems() > 0 && (
+                          <span className="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full">
+                            {getTotalItems()}
+                          </span>
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate('/customer-profile')}
+                        data-testid="profile-button"
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        Hi, {user?.name}
+                      </Button>
+                    </>
+                  )}
+                  {isRestaurant && (
+                    <>
+                      <Button
+                        size="sm"
+                        onClick={() => navigate('/restaurant-dashboard')}
+                        data-testid="dashboard-button"
+                        className="bg-primary text-primary-foreground"
+                      >
+                        Go to Dashboard
+                      </Button>
+                      <span className="text-sm text-muted-foreground">Hi, {user?.name}</span>
+                    </>
+                  )}
+                  <Button variant="ghost" size="sm" onClick={logout} data-testid="logout-button">
+                    <LogOut className="w-4 h-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/customer-auth')} data-testid="customer-login-button">
+                    Customer Login
+                  </Button>
+                  <Button size="sm" onClick={() => navigate('/restaurant-auth')} data-testid="restaurant-login-button">
+                    Restaurant Login
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
