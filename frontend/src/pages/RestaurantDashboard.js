@@ -190,6 +190,25 @@ const RestaurantDashboard = () => {
     }
   };
 
+  const handleDeleteMenuItem = async (itemId) => {
+    if (!window.confirm('Are you sure you want to delete this item?')) {
+      return;
+    }
+    
+    try {
+      await axios.delete(
+        `${API}/restaurants/${selectedRestaurant.restaurant_id}/items/${itemId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success('Menu item deleted!');
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to delete menu item');
+    }
+  };
+
   const getOrderStats = () => {
     const total = orders.reduce((sum, order) => sum + order.total_amount, 0);
     const pending = orders.filter(o => ['PLACED', 'ACCEPTED', 'PREPARING'].includes(o.status)).length;
