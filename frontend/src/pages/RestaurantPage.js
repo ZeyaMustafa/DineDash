@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, Minus, Calendar, Clock, Users } from 'lucide-react';
+import { ArrowLeft, Plus, Minus, Calendar, Clock, Users, ShoppingCart, User, LogOut, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
