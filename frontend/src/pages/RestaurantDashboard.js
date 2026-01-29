@@ -529,7 +529,31 @@ const RestaurantDashboard = () => {
                   {categories.map((category) => (
                     <div key={category.category_id} className="bg-white p-6 rounded-xl shadow-card border border-border">
                       <h3 className="font-heading text-2xl font-semibold mb-4">{category.name}</h3>
-                      <p className="text-sm text-muted-foreground">Add items to this category using the "Add Menu Item" button above.</p>
+                      {category.items && category.items.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {category.items.map((item) => (
+                            <div key={item.item_id} className="flex gap-4 p-4 border border-border rounded-lg">
+                              <img
+                                src={item.image_url}
+                                alt={item.name}
+                                className="w-20 h-20 object-cover rounded-lg"
+                              />
+                              <div className="flex-1">
+                                <div className="flex items-start justify-between mb-1">
+                                  <h4 className="font-semibold">{item.name}</h4>
+                                  <span className={`text-xs px-2 py-1 rounded ${item.is_veg ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                    {item.is_veg ? 'Veg' : 'Non-Veg'}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
+                                <p className="font-bold text-primary">₹{item.price}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No items in this category yet. Use "Add Menu Item" to add items.</p>
+                      )}
                     </div>
                   ))}
                 </div>
