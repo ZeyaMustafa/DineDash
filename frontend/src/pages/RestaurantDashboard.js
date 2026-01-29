@@ -484,6 +484,17 @@ const RestaurantDashboard = () => {
                           />
                         </div>
                         <div>
+                          <Label htmlFor="image_url">Image URL (Optional)</Label>
+                          <Input
+                            id="image_url"
+                            type="url"
+                            value={newMenuItem.image_url}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, image_url: e.target.value })}
+                            placeholder="Leave blank for random food image"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">If left blank, a random food image will be used</p>
+                        </div>
+                        <div>
                           <Label>Food Type</Label>
                           <div className="flex gap-4">
                             <label className="flex items-center gap-2">
