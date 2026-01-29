@@ -78,12 +78,8 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isAuthenticated && isRestaurant) {
-      navigate('/restaurant-dashboard');
-      return;
-    }
     fetchRestaurants();
-  }, [searchQuery, dietFilter, isAuthenticated, isRestaurant]);
+  }, [searchQuery, dietFilter]);
 
   const fetchRestaurants = async () => {
     try {
