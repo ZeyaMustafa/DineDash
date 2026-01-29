@@ -184,9 +184,9 @@ const RestaurantPage = () => {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => navigate('/')} data-testid="back-button">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                {t('common.back')}
               </Button>
-              <h1 className="font-heading text-2xl font-bold text-primary">DineDash</h1>
+              <h1 className="font-heading text-2xl font-bold text-primary">{t('common.appName')}</h1>
             </div>
             <div className="flex items-center gap-4">
               <LanguageToggle />
@@ -201,7 +201,7 @@ const RestaurantPage = () => {
                         data-testid="favorites-button"
                       >
                         <Heart className="w-4 h-4 mr-2" />
-                        Favorites
+                        {t('navbar.favorites')}
                       </Button>
                       <Button
                         variant="outline"
@@ -211,7 +211,7 @@ const RestaurantPage = () => {
                         data-testid="cart-button"
                       >
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Cart
+                        {t('navbar.cart')}
                         {getTotalItems() > 0 && (
                           <span className="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full">
                             {getTotalItems()}
@@ -225,7 +225,7 @@ const RestaurantPage = () => {
                         data-testid="profile-button"
                       >
                         <User className="w-4 h-4 mr-2" />
-                        Hi, {user?.name}
+                        {t('navbar.profile', { name: user?.name })}
                       </Button>
                     </>
                   )}
@@ -237,9 +237,9 @@ const RestaurantPage = () => {
                         data-testid="dashboard-button"
                         className="bg-primary text-primary-foreground"
                       >
-                        Go to Dashboard
+                        {t('navbar.dashboard')}
                       </Button>
-                      <span className="text-sm text-muted-foreground">Hi, {user?.name}</span>
+                      <span className="text-sm text-muted-foreground">{t('navbar.profile', { name: user?.name })}</span>
                     </>
                   )}
                   <Button variant="ghost" size="sm" onClick={logout} data-testid="logout-button">
@@ -249,10 +249,10 @@ const RestaurantPage = () => {
               ) : (
                 <>
                   <Button variant="outline" size="sm" onClick={() => navigate('/customer-auth')} data-testid="customer-login-button">
-                    Customer Login
+                    {t('navbar.customerLogin')}
                   </Button>
                   <Button size="sm" onClick={() => navigate('/restaurant-auth')} data-testid="restaurant-login-button">
-                    Restaurant Login
+                    {t('navbar.restaurantLogin')}
                   </Button>
                 </>
               )}
