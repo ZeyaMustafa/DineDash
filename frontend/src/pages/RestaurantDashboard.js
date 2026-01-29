@@ -292,7 +292,7 @@ const RestaurantDashboard = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="orders" className="space-y-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <TabsList className="grid w-full md:w-[600px] grid-cols-3">
             <TabsTrigger value="orders" data-testid="orders-tab">
               <Package className="w-4 h-4 mr-2" />
