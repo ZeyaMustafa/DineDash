@@ -8,6 +8,7 @@ import RestaurantAuth from './pages/RestaurantAuth';
 import CartCheckout from './pages/CartCheckout';
 import OrderTracking from './pages/OrderTracking';
 import ReservationTracking from './pages/ReservationTracking';
+import CustomerProfile from './pages/CustomerProfile';
 import RestaurantDashboard from './pages/RestaurantDashboard';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
@@ -29,6 +30,7 @@ function App() {
               <Route path="/cart" element={<CartCheckout />} />
               <Route path="/orders/:orderId" element={<OrderTracking />} />
               <Route path="/reservations/:reservationId" element={<ReservationTracking />} />
+              <Route path="/customer-profile" element={<CustomerProfile />} />
               <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/payment-cancel" element={<PaymentCancel />} />
