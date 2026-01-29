@@ -242,16 +242,18 @@ const RestaurantDashboard = () => {
 
   return (
     <div className="min-h-screen" className="bg-background">
-      <header className="bg-white border-b border-border sticky top-0 z-50">
+      <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate('/')} data-testid="back-button">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Home
-          </Button>
-          <h1 className="font-heading text-2xl font-bold" data-testid="dashboard-title">
-            {selectedRestaurant?.name}
-          </h1>
-          <div></div>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={() => navigate('/')} data-testid="back-button">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Home
+            </Button>
+            <h1 className="font-heading text-2xl font-bold" data-testid="dashboard-title">
+              {selectedRestaurant?.name}
+            </h1>
+          </div>
+          <LanguageToggle />
         </div>
       </header>
 
