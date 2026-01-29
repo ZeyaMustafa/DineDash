@@ -98,6 +98,7 @@ const RestaurantHomePage = () => {
               <p className="text-sm text-muted-foreground">{restaurant.cuisine}</p>
             </div>
             <div className="flex items-center gap-4">
+              <LanguageToggle />
               <span className="text-sm text-muted-foreground">Hi, {user?.name}</span>
               <Button variant="ghost" size="sm" onClick={logout} data-testid="logout-button">
                 Logout
