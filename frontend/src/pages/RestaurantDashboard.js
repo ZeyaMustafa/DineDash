@@ -20,6 +20,7 @@ const RestaurantDashboard = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { token, isAuthenticated, isRestaurant, user } = useAuth();
+  const { t } = useTranslation();
   const [restaurants, setRestaurants] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [orders, setOrders] = useState([]);
