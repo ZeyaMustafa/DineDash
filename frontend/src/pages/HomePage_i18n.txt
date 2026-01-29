@@ -1,0 +1,19 @@
+# HomePage i18n Updates Required
+
+Add to imports:
+import { useTranslation } from 'react-i18next';
+import LanguageToggle from '@/components/LanguageToggle';
+
+Add to component:
+const { t } = useTranslation();
+
+Update navbar to include LanguageToggle before auth buttons
+
+Replace strings with t() calls:
+- t('common.appName') for "DineDash"
+- t('home.hero.title') for "Order. Reserve. Enjoy."
+- t('home.hero.subtitle') for subtitle
+- t('home.search') for search placeholder
+- t('home.filters.all'), t('home.filters.delivery'), etc. for filter buttons
+- t('navbar.favorites'), t('navbar.cart'), t('navbar.profile', { name: user?.name })
+- All other UI strings
