@@ -200,15 +200,25 @@ const HomePage = () => {
                   {isCustomer && (
                     <>
                       <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate('/favorites')}
+                        data-testid="favorites-button"
+                      >
+                        <Heart className="w-4 h-4 mr-2" />
+                        Favorites
+                      </Button>
+                      <Button
                         variant="outline"
                         size="sm"
                         onClick={() => navigate('/cart')}
                         className="relative"
                         data-testid="cart-button"
                       >
-                        <ShoppingCart className="w-4 h-4" />
+                        <ShoppingCart className="w-4 h-4 mr-2" />
+                        Cart
                         {getTotalItems() > 0 && (
-                          <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                          <span className="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full">
                             {getTotalItems()}
                           </span>
                         )}
