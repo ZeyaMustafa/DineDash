@@ -32,8 +32,19 @@ const RestaurantDashboard = () => {
     description: '',
     price: '',
     is_veg: true,
-    image_url: 'https://images.unsplash.com/photo-1474221379956-afaf88e3d760?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHw0fHxnb3VybWV0JTIwZm9vZCUyMHBsYXRpbmclMjBlbGVnYW50fGVufDB8fHx8MTc2OTY5MjcyNnww&ixlib=rb-4.1.0&q=85'
+    image_url: ''
   });
+
+  const foodImages = [
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400',
+    'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400',
+    'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400',
+    'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400',
+    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400',
+    'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400',
+    'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400'
+  ];
 
   useEffect(() => {
     if (!isAuthenticated || !isRestaurant) {
