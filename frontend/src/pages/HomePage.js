@@ -49,6 +49,7 @@ const RestaurantCardSkeleton = () => (
 const RestaurantCard = ({ restaurant, isFavorite, onToggleFavorite }) => {
   const navigate = useNavigate();
   const { isAuthenticated, isCustomer } = useAuth();
+  const { t } = useTranslation();
   
   return (
     <motion.div
@@ -82,7 +83,7 @@ const RestaurantCard = ({ restaurant, isFavorite, onToggleFavorite }) => {
       <div className="p-6 space-y-3">
         <div className="flex items-start justify-between gap-4">
           <h3 className="font-heading text-2xl font-semibold text-foreground">{restaurant.name}</h3>
-          <ServiceBadge serviceType={restaurant.service_type} />
+          <ServiceBadge serviceType={restaurant.service_type} t={t} />
         </div>
         <p className="text-sm text-muted-foreground uppercase tracking-wider">{restaurant.cuisine}</p>
         
@@ -105,10 +106,10 @@ const RestaurantCard = ({ restaurant, isFavorite, onToggleFavorite }) => {
         {(restaurant.is_veg || restaurant.is_non_veg) && (
           <div className="flex gap-2">
             {restaurant.is_veg && (
-              <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">Veg</span>
+              <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">{t('restaurant.details.veg')}</span>
             )}
             {restaurant.is_non_veg && (
-              <span className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full">Non-Veg</span>
+              <span className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full">{t('restaurant.details.nonVeg')}</span>
             )}
           </div>
         )}
