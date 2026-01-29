@@ -661,6 +661,85 @@ async def get_restaurant_reservations(current_user: dict = Depends(get_current_r
     reservations = await db.reservations.find({"restaurant_id": {"$in": restaurant_ids}}, {"_id": 0}).sort("date", -1).to_list(100)
     return reservations
 
+# ============= REVIEW ROUTES =============
+
+@api_router.post("/reviews", response_model=Review)
+async def create_review(review_data: ReviewCreate, current_user: dict = Depends(get_current_user)):
+    review = Review(
+        user_id=current_user['user_id'],
+        restaurant_id=review_data.restaurant_id,
+        order_id=review_data.order_id,
+        rating=review_data.rating,
+        comment=review_data.comment
+    )
+    doc = review.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.reviews.insert_one(doc)
+    return review
+
+@api_router.get("/restaurants/{restaurant_id}/reviews")
+async def get_restaurant_reviews(restaurant_id: str):
+    reviews = await db.reviews.find({"restaurant_id": restaurant_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    
+    # Get user names for reviews
+    for review in reviews:
+        user = await db.users.find_one({"user_id": review['user_id']}, {"_id": 0, "name": 1})
+        review['user_name'] = user.get('name', 'Anonymous') if user else 'Anonymous'
+    
+    return reviews
+
+@api_router.get("/restaurants/{restaurant_id}/rating")
+async def get_restaurant_rating(restaurant_id: str):
+    reviews = await db.reviews.find({"restaurant_id": restaurant_id}, {"_id": 0}).to_list(1000)
+    if not reviews:
+        return {"average_rating": 0, "total_reviews": 0}
+    
+    total_rating = sum(r['rating'] for r in reviews)
+    return {
+        "average_rating": round(total_rating / len(reviews), 1),
+        "total_reviews": len(reviews)
+    }
+
+# ============= FAVORITE ROUTES =============
+
+@api_router.post("/favorites/{restaurant_id}")
+async def add_favorite(restaurant_id: str, current_user: dict = Depends(get_current_user)):
+    existing = await db.favorites.find_one({
+        "user_id": current_user['user_id'],
+        "restaurant_id": restaurant_id
+    }, {"_id": 0})
+    
+    if existing:
+        return {"message": "Already in favorites"}
+    
+    favorite = Favorite(
+        user_id=current_user['user_id'],
+        restaurant_id=restaurant_id
+    )
+    doc = favorite.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.favorites.insert_one(doc)
+    return {"message": "Added to favorites"}
+
+@api_router.delete("/favorites/{restaurant_id}")
+async def remove_favorite(restaurant_id: str, current_user: dict = Depends(get_current_user)):
+    await db.favorites.delete_one({
+        "user_id": current_user['user_id'],
+        "restaurant_id": restaurant_id
+    })
+    return {"message": "Removed from favorites"}
+
+@api_router.get("/favorites")
+async def get_favorites(current_user: dict = Depends(get_current_user)):
+    favorites = await db.favorites.find({"user_id": current_user['user_id']}, {"_id": 0}).to_list(100)
+    restaurant_ids = [f['restaurant_id'] for f in favorites]
+    
+    if not restaurant_ids:
+        return []
+    
+    restaurants = await db.restaurants.find({"restaurant_id": {"$in": restaurant_ids}}, {"_id": 0}).to_list(100)
+    return restaurants
+
 # ============= PAYMENT ROUTES =============
 
 @api_router.post("/payments/checkout")
