@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { Search, ShoppingCart, User, LogOut } from 'lucide-react';
+import { Search, ShoppingCart, User, LogOut, Star, Clock, MapPin, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 
@@ -28,8 +30,23 @@ const ServiceBadge = ({ serviceType }) => {
   );
 };
 
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCardSkeleton = () => (
+  <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <Skeleton className="aspect-[4/3] w-full" />
+    <div className="p-6 space-y-3">
+      <Skeleton className="h-6 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
+      <div className="flex gap-2">
+        <Skeleton className="h-6 w-16" />
+        <Skeleton className="h-6 w-16" />
+      </div>
+    </div>
+  </div>
+);
+
+const RestaurantCard = ({ restaurant, isFavorite, onToggleFavorite }) => {
   const navigate = useNavigate();
+  const { isAuthenticated, isCustomer } = useAuth();
   
   return (
     <motion.div
@@ -39,6 +56,19 @@ const RestaurantCard = ({ restaurant }) => {
       onClick={() => navigate(`/restaurant/${restaurant.restaurant_id}`)}
       style={{ transition: 'all 0.3s ease' }}
     >
+      {isAuthenticated && isCustomer && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(restaurant.restaurant_id);
+          }}
+          className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors"
+          data-testid={`favorite-${restaurant.restaurant_id}`}
+        >
+          <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+        </button>
+      )}
+      
       <div className="aspect-[4/3] overflow-hidden">
         <img
           src={restaurant.image_url}
@@ -53,6 +83,23 @@ const RestaurantCard = ({ restaurant }) => {
           <ServiceBadge serviceType={restaurant.service_type} />
         </div>
         <p className="text-sm text-muted-foreground uppercase tracking-wider">{restaurant.cuisine}</p>
+        
+        <div className="flex items-center gap-4 text-sm">
+          {restaurant.average_rating > 0 && (
+            <div className="flex items-center gap-1">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-semibold">{restaurant.average_rating}</span>
+              <span className="text-muted-foreground">({restaurant.total_reviews})</span>
+            </div>
+          )}
+          {restaurant.service_type !== 'reservations' && (
+            <div className="flex items-center gap-1 text-muted-foreground">
+              <Clock className="w-4 h-4" />
+              <span>30-45 min</span>
+            </div>
+          )}
+        </div>
+        
         {(restaurant.is_veg || restaurant.is_non_veg) && (
           <div className="flex gap-2">
             {restaurant.is_veg && (
@@ -70,16 +117,22 @@ const RestaurantCard = ({ restaurant }) => {
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated, isCustomer, isRestaurant } = useAuth();
+  const { user, logout, isAuthenticated, isCustomer, isRestaurant, token } = useAuth();
   const { getTotalItems } = useCart();
   const [restaurants, setRestaurants] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [dietFilter, setDietFilter] = useState('all');
+  const [serviceFilter, setServiceFilter] = useState('all');
+  const [cuisineFilter, setCuisineFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchRestaurants();
-  }, [searchQuery, dietFilter]);
+    if (isAuthenticated && isCustomer) {
+      fetchFavorites();
+    }
+  }, [searchQuery, dietFilter, serviceFilter, cuisineFilter]);
 
   const fetchRestaurants = async () => {
     try {
@@ -87,6 +140,8 @@ const HomePage = () => {
       const params = {};
       if (searchQuery) params.search = searchQuery;
       if (dietFilter !== 'all') params.diet = dietFilter;
+      if (serviceFilter !== 'all') params.service_type = serviceFilter;
+      if (cuisineFilter !== 'all') params.cuisine = cuisineFilter;
       
       const response = await axios.get(`${API}/restaurants`, { params });
       setRestaurants(response.data);
@@ -96,6 +151,40 @@ const HomePage = () => {
       setLoading(false);
     }
   };
+
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get(`${API}/favorites`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFavorites(response.data.map(r => r.restaurant_id));
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+  const toggleFavorite = async (restaurantId) => {
+    const isFavorite = favorites.includes(restaurantId);
+    try {
+      if (isFavorite) {
+        await axios.delete(`${API}/favorites/${restaurantId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setFavorites(favorites.filter(id => id !== restaurantId));
+        toast.success('Removed from favorites');
+      } else {
+        await axios.post(`${API}/favorites/${restaurantId}`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setFavorites([...favorites, restaurantId]);
+        toast.success('Added to favorites');
+      }
+    } catch (error) {
+      toast.error('Failed to update favorites');
+    }
+  };
+
+  const uniqueCuisines = [...new Set(restaurants.map(r => r.cuisine))];
 
   return (
     <div className="min-h-screen">
@@ -194,7 +283,7 @@ const HomePage = () => {
       </div>
 
       <div className="container mx-auto px-4 md:px-8 py-12">
-        <div className="mb-12 space-y-6">
+        <div className="mb-8 space-y-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -206,31 +295,118 @@ const HomePage = () => {
                 data-testid="search-input"
               />
             </div>
-            <Select value={dietFilter} onValueChange={setDietFilter}>
-              <SelectTrigger className="w-full md:w-48 h-12" data-testid="diet-filter">
-                <SelectValue placeholder="Diet Preference" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="veg">Veg Only</SelectItem>
-                <SelectItem value="non_veg">Non-Veg</SelectItem>
-              </SelectContent>
-            </Select>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setServiceFilter('all')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                serviceFilter === 'all'
+                  ? 'bg-primary text-white'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+              data-testid="filter-all"
+            >
+              All
+            </button>
+            <button
+              onClick={() => setServiceFilter('delivery')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                serviceFilter === 'delivery'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+              }`}
+              data-testid="filter-delivery"
+            >
+              Delivery
+            </button>
+            <button
+              onClick={() => setServiceFilter('reservations')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                serviceFilter === 'reservations'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+              }`}
+              data-testid="filter-reservations"
+            >
+              Reservations
+            </button>
+            
+            <div className="h-8 w-px bg-border mx-2"></div>
+            
+            <button
+              onClick={() => setDietFilter(dietFilter === 'veg' ? 'all' : 'veg')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                dietFilter === 'veg'
+                  ? 'bg-green-500 text-white'
+                  : 'bg-green-100 text-green-700 hover:bg-green-200'
+              }`}
+              data-testid="filter-veg"
+            >
+              Veg Only
+            </button>
+            <button
+              onClick={() => setDietFilter(dietFilter === 'non_veg' ? 'all' : 'non_veg')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                dietFilter === 'non_veg'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-red-100 text-red-700 hover:bg-red-200'
+              }`}
+              data-testid="filter-non-veg"
+            >
+              Non-Veg
+            </button>
+
+            {uniqueCuisines.length > 0 && (
+              <>
+                <div className="h-8 w-px bg-border mx-2"></div>
+                <Select value={cuisineFilter} onValueChange={setCuisineFilter}>
+                  <SelectTrigger className="w-48 h-10 rounded-full" data-testid="cuisine-filter">
+                    <SelectValue placeholder="All Cuisines" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Cuisines</SelectItem>
+                    {uniqueCuisines.map((cuisine) => (
+                      <SelectItem key={cuisine} value={cuisine}>{cuisine}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </>
+            )}
           </div>
         </div>
 
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading restaurants...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" data-testid="restaurants-loading">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <RestaurantCardSkeleton key={i} />
+            ))}
           </div>
         ) : restaurants.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No restaurants found</p>
+          <div className="text-center py-20">
+            <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="w-12 h-12 text-muted-foreground" />
+            </div>
+            <h3 className="font-heading text-2xl font-semibold mb-2">No restaurants found</h3>
+            <p className="text-muted-foreground mb-6">Try adjusting your filters or search query</p>
+            <Button onClick={() => {
+              setSearchQuery('');
+              setDietFilter('all');
+              setServiceFilter('all');
+              setCuisineFilter('all');
+            }}>
+              Clear Filters
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" data-testid="restaurants-grid">
             {restaurants.map((restaurant) => (
-              <RestaurantCard key={restaurant.restaurant_id} restaurant={restaurant} />
+              <RestaurantCard
+                key={restaurant.restaurant_id}
+                restaurant={restaurant}
+                isFavorite={favorites.includes(restaurant.restaurant_id)}
+                onToggleFavorite={toggleFavorite}
+              />
             ))}
           </div>
         )}
