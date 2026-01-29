@@ -360,18 +360,32 @@ async def restaurant_login(credentials: UserLogin):
 # ============= RESTAURANT ROUTES =============
 
 @api_router.get("/restaurants")
-async def get_restaurants(search: Optional[str] = None, cuisine: Optional[str] = None, diet: Optional[str] = None):
+async def get_restaurants(search: Optional[str] = None, cuisine: Optional[str] = None, diet: Optional[str] = None, service_type: Optional[str] = None):
     query = {}
     if search:
         query["name"] = {"$regex": search, "$options": "i"}
     if cuisine:
-        query["cuisine"] = cuisine
+        query["cuisine"] = {"$regex": cuisine, "$options": "i"}
     if diet == "veg":
         query["is_veg"] = True
     elif diet == "non_veg":
         query["is_non_veg"] = True
+    if service_type:
+        query["service_type"] = {"$in": [service_type, "both"]}
     
     restaurants = await db.restaurants.find(query, {"_id": 0}).to_list(100)
+    
+    # Add ratings to each restaurant
+    for restaurant in restaurants:
+        reviews = await db.reviews.find({"restaurant_id": restaurant['restaurant_id']}, {"_id": 0}).to_list(1000)
+        if reviews:
+            total_rating = sum(r['rating'] for r in reviews)
+            restaurant['average_rating'] = round(total_rating / len(reviews), 1)
+            restaurant['total_reviews'] = len(reviews)
+        else:
+            restaurant['average_rating'] = 0
+            restaurant['total_reviews'] = 0
+    
     return restaurants
 
 @api_router.get("/restaurants/{restaurant_id}")
