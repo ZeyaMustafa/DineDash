@@ -162,8 +162,11 @@ class Order(BaseModel):
     payment_status: str = "pending"
     stripe_session_id: Optional[str] = None
     status: str = "PLACED"
+    preparation_time_minutes: int = 30
     estimated_delivery_time: Optional[datetime] = None
+    status_timestamps: dict = Field(default_factory=dict)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class OrderCreate(BaseModel):
     restaurant_id: str
