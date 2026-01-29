@@ -113,20 +113,31 @@ const HomePage = () => {
               {isAuthenticated ? (
                 <>
                   {isCustomer && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate('/cart')}
-                      className="relative"
-                      data-testid="cart-button"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      {getTotalItems() > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                          {getTotalItems()}
-                        </span>
-                      )}
-                    </Button>
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate('/cart')}
+                        className="relative"
+                        data-testid="cart-button"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        {getTotalItems() > 0 && (
+                          <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                            {getTotalItems()}
+                          </span>
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate('/customer-profile')}
+                        data-testid="profile-button"
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        Hi, {user?.name}
+                      </Button>
+                    </>
                   )}
                   {isRestaurant && (
                     <Button
@@ -138,7 +149,6 @@ const HomePage = () => {
                       Dashboard
                     </Button>
                   )}
-                  <span className="text-sm text-muted-foreground" data-testid="user-name">Hi, {user?.name}</span>
                   <Button variant="ghost" size="sm" onClick={logout} data-testid="logout-button">
                     <LogOut className="w-4 h-4" />
                   </Button>
