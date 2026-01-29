@@ -13,6 +13,7 @@ const API = `${BACKEND_URL}/api`;
 const RestaurantHomePage = () => {
   const navigate = useNavigate();
   const { user, logout, token } = useAuth();
+  const { t } = useTranslation();
   const [restaurant, setRestaurant] = useState(null);
   const [stats, setStats] = useState({ totalRevenue: 0, pendingOrders: 0, totalOrders: 0 });
   const [menu, setMenu] = useState([]);
