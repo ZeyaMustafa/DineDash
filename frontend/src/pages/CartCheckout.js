@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import { useTranslation } from 'react-i18next';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -17,6 +18,7 @@ const CartCheckout = () => {
   const navigate = useNavigate();
   const { token, isAuthenticated } = useAuth();
   const { cart, restaurantName, getTotalAmount, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [orderData, setOrderData] = useState({
     delivery_address: '',
@@ -32,10 +34,10 @@ const CartCheckout = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center" className="bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h2 className="font-heading text-3xl font-bold mb-4">Your cart is empty</h2>
-          <Button onClick={() => navigate('/')} data-testid="go-home-button">Browse Restaurants</Button>
+          <h2 className="font-heading text-3xl font-bold mb-4">{t('cart.emptyCart')}</h2>
+          <Button onClick={() => navigate('/')} data-testid="go-home-button">{t('home.browseRestaurants')}</Button>
         </div>
       </div>
     );
@@ -43,7 +45,7 @@ const CartCheckout = () => {
 
   const handleCheckout = async () => {
     if (!orderData.delivery_address || !orderData.delivery_phone) {
-      toast.error('Please fill in delivery details');
+      toast.error(t('messages.fillDeliveryDetails'));
       return;
     }
 
@@ -88,34 +90,34 @@ const CartCheckout = () => {
         window.location.href = paymentResponse.data.url;
       } else {
         clearCart();
-        toast.success('Order placed successfully!');
+        toast.success(t('messages.orderPlaced'));
         navigate(`/orders/${orderId}`);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to place order');
+      toast.error(error.response?.data?.detail || t('messages.failedToUpdate'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen" className="bg-background">
+    <div className="min-h-screen bg-background">
       <header className="bg-white border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 md:px-8 py-4">
           <Button variant="ghost" onClick={() => navigate(-1)} data-testid="back-button">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            {t('common.back')}
           </Button>
         </div>
       </header>
 
       <div className="container mx-auto px-4 md:px-8 py-12">
-        <h1 className="font-heading text-5xl font-bold mb-8" data-testid="cart-title">Checkout</h1>
+        <h1 className="font-heading text-5xl font-bold mb-8" data-testid="cart-title">{t('cart.title')}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white p-6 rounded-xl shadow-card border border-border">
-              <h2 className="font-heading text-2xl font-semibold mb-4">Order from {restaurantName}</h2>
+              <h2 className="font-heading text-2xl font-semibold mb-4">{t('cart.orderFrom', { name: restaurantName })}</h2>
               <div className="space-y-4">
                 {cart.map((item) => (
                   <div key={item.item_id} className="flex items-center gap-4 pb-4 border-b border-border last:border-0" data-testid={`cart-item-${item.item_id}`}>
@@ -157,36 +159,36 @@ const CartCheckout = () => {
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-card border border-border">
-              <h2 className="font-heading text-2xl font-semibold mb-4">Delivery Details</h2>
+              <h2 className="font-heading text-2xl font-semibold mb-4">{t('cart.deliveryDetails')}</h2>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="address">Delivery Address</Label>
+                  <Label htmlFor="address">{t('cart.deliveryAddress')}</Label>
                   <Input
                     id="address"
                     value={orderData.delivery_address}
                     onChange={(e) => setOrderData({ ...orderData, delivery_address: e.target.value })}
-                    placeholder="Enter your delivery address"
+                    placeholder={t('cart.deliveryAddressPlaceholder')}
                     data-testid="delivery-address-input"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone">{t('cart.phoneNumber')}</Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={orderData.delivery_phone}
                     onChange={(e) => setOrderData({ ...orderData, delivery_phone: e.target.value })}
-                    placeholder="Enter your phone number"
+                    placeholder={t('cart.phoneNumberPlaceholder')}
                     data-testid="delivery-phone-input"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="notes">Order Notes (Optional)</Label>
+                  <Label htmlFor="notes">{t('cart.orderNotes')}</Label>
                   <Input
                     id="notes"
                     value={orderData.notes}
                     onChange={(e) => setOrderData({ ...orderData, notes: e.target.value })}
-                    placeholder="Any special instructions?"
+                    placeholder={t('cart.orderNotesPlaceholder')}
                     data-testid="order-notes-input"
                   />
                 </div>
@@ -194,15 +196,15 @@ const CartCheckout = () => {
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-card border border-border">
-              <h2 className="font-heading text-2xl font-semibold mb-4">Payment Method</h2>
+              <h2 className="font-heading text-2xl font-semibold mb-4">{t('cart.paymentMethod')}</h2>
               <RadioGroup value={orderData.payment_method} onValueChange={(v) => setOrderData({ ...orderData, payment_method: v })}>
                 <div className="flex items-center space-x-2" data-testid="payment-cod">
                   <RadioGroupItem value="COD" id="cod" />
-                  <Label htmlFor="cod">Cash on Delivery</Label>
+                  <Label htmlFor="cod">{t('cart.cod')}</Label>
                 </div>
                 <div className="flex items-center space-x-2" data-testid="payment-stripe">
                   <RadioGroupItem value="Stripe" id="stripe" />
-                  <Label htmlFor="stripe">Pay with Card (Stripe)</Label>
+                  <Label htmlFor="stripe">{t('cart.stripe')}</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -210,19 +212,19 @@ const CartCheckout = () => {
 
           <div>
             <div className="bg-white p-6 rounded-xl shadow-card border border-border sticky top-24">
-              <h2 className="font-heading text-2xl font-semibold mb-4">Order Summary</h2>
+              <h2 className="font-heading text-2xl font-semibold mb-4">{t('cart.orderSummary')}</h2>
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
+                  <span>{t('cart.subtotal')}</span>
                   <span>₹{getTotalAmount().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Delivery Fee</span>
+                  <span>{t('cart.deliveryFee')}</span>
                   <span>₹40.00</span>
                 </div>
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between font-bold text-lg">
-                    <span>Total</span>
+                    <span>{t('cart.total')}</span>
                     <span data-testid="total-amount">₹{(getTotalAmount() + 40).toFixed(2)}</span>
                   </div>
                 </div>
@@ -233,7 +235,7 @@ const CartCheckout = () => {
                 disabled={loading}
                 data-testid="place-order-button"
               >
-                {loading ? 'Processing...' : 'Place Order'}
+                {loading ? t('cart.processing') : t('cart.placeOrder')}
               </Button>
             </div>
           </div>
