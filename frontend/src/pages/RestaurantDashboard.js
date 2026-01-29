@@ -16,6 +16,7 @@ const API = `${BACKEND_URL}/api`;
 
 const RestaurantDashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { token, isAuthenticated, isRestaurant, user } = useAuth();
   const [restaurants, setRestaurants] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -25,6 +26,7 @@ const RestaurantDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showAddMenuItem, setShowAddMenuItem] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'orders');
   const [newCategory, setNewCategory] = useState({ name: '', display_order: 0 });
   const [newMenuItem, setNewMenuItem] = useState({
     category_id: '',
