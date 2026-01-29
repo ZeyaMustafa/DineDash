@@ -50,9 +50,9 @@ const OrderTracking = () => {
 
   const statusSteps = [
     { key: 'PLACED', label: 'Order Placed', icon: Package },
-    { key: 'ACCEPTED', label: 'Accepted', icon: CheckCircle },
-    { key: 'PREPARING', label: 'Preparing', icon: Package },
-    { key: 'OUT_FOR_DELIVERY', label: 'Out for Delivery', icon: Truck },
+    { key: 'ACCEPTED', label: 'Order Accepted', icon: CheckCircle },
+    { key: 'PREPARING', label: 'Order Preparation', icon: Package },
+    { key: 'OUT_FOR_DELIVERY', label: 'On the way', icon: Truck },
     { key: 'DELIVERED', label: 'Delivered', icon: CheckCircle }
   ];
 
