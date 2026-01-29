@@ -4,6 +4,8 @@ import axios from 'axios';
 import { ArrowLeft, Plus, Package, Calendar, DollarSign, TrendingUp, Clock, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageToggle from '@/components/LanguageToggle';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
