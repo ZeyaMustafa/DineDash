@@ -19,10 +19,20 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
-    if (sessionId) {
+    if (sessionId && token) {
       checkPaymentStatus(sessionId);
+    } else if (sessionId && !token) {
+      // Wait for token to be available
+      const timer = setTimeout(() => {
+        if (token) {
+          checkPaymentStatus(sessionId);
+        } else {
+          setStatus('error');
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
     }
-  }, [searchParams]);
+  }, [searchParams, token]);
 
   const checkPaymentStatus = async (sessionId) => {
     let attempts = 0;
