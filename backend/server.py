@@ -217,6 +217,29 @@ class PaymentTransaction(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class Review(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    review_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    restaurant_id: str
+    order_id: Optional[str] = None
+    rating: int
+    comment: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ReviewCreate(BaseModel):
+    restaurant_id: str
+    order_id: Optional[str] = None
+    rating: int
+    comment: Optional[str] = None
+
+class Favorite(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    favorite_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    restaurant_id: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # ============= AUTH HELPERS =============
 
 def hash_password(password: str) -> str:
