@@ -283,7 +283,7 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             className="font-heading text-5xl md:text-6xl font-bold tracking-tight leading-tight"
           >
-            Order. Reserve. Enjoy.
+            {t('home.hero.title')}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -291,7 +291,7 @@ const HomePage = () => {
             transition={{ delay: 0.2 }}
             className="text-lg leading-relaxed max-w-2xl mx-auto"
           >
-            Discover the best restaurants for delivery and dine-in reservations
+            {t('home.hero.subtitle')}
           </motion.p>
         </div>
       </div>
@@ -302,7 +302,7 @@ const HomePage = () => {
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
-                placeholder="Search restaurants..."
+                placeholder={t('home.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 bg-input/50 border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg"
@@ -321,7 +321,7 @@ const HomePage = () => {
               }`}
               data-testid="filter-all"
             >
-              All
+              {t('home.filters.all')}
             </button>
             <button
               onClick={() => setServiceFilter('delivery')}
@@ -332,7 +332,7 @@ const HomePage = () => {
               }`}
               data-testid="filter-delivery"
             >
-              Delivery
+              {t('home.filters.delivery')}
             </button>
             <button
               onClick={() => setServiceFilter('reservations')}
@@ -343,7 +343,7 @@ const HomePage = () => {
               }`}
               data-testid="filter-reservations"
             >
-              Reservations
+              {t('home.filters.reservations')}
             </button>
             
             <div className="h-8 w-px bg-border mx-2"></div>
@@ -357,7 +357,7 @@ const HomePage = () => {
               }`}
               data-testid="filter-veg"
             >
-              Veg Only
+              {t('home.filters.veg')}
             </button>
             <button
               onClick={() => setDietFilter(dietFilter === 'non_veg' ? 'all' : 'non_veg')}
@@ -368,7 +368,7 @@ const HomePage = () => {
               }`}
               data-testid="filter-non-veg"
             >
-              Non-Veg
+              {t('home.filters.nonVeg')}
             </button>
 
             {uniqueCuisines.length > 0 && (
@@ -376,10 +376,10 @@ const HomePage = () => {
                 <div className="h-8 w-px bg-border mx-2"></div>
                 <Select value={cuisineFilter} onValueChange={setCuisineFilter}>
                   <SelectTrigger className="w-48 h-10 rounded-full" data-testid="cuisine-filter">
-                    <SelectValue placeholder="All Cuisines" />
+                    <SelectValue placeholder={t('home.filters.allCuisines')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Cuisines</SelectItem>
+                    <SelectItem value="all">{t('home.filters.allCuisines')}</SelectItem>
                     {uniqueCuisines.map((cuisine) => (
                       <SelectItem key={cuisine} value={cuisine}>{cuisine}</SelectItem>
                     ))}
@@ -401,15 +401,15 @@ const HomePage = () => {
             <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="w-12 h-12 text-muted-foreground" />
             </div>
-            <h3 className="font-heading text-2xl font-semibold mb-2">No restaurants found</h3>
-            <p className="text-muted-foreground mb-6">Try adjusting your filters or search query</p>
+            <h3 className="font-heading text-2xl font-semibold mb-2">{t('home.noRestaurants')}</h3>
+            <p className="text-muted-foreground mb-6">{t('home.tryAdjust')}</p>
             <Button onClick={() => {
               setSearchQuery('');
               setDietFilter('all');
               setServiceFilter('all');
               setCuisineFilter('all');
             }}>
-              Clear Filters
+              {t('home.clearFilters')}
             </Button>
           </div>
         ) : (
