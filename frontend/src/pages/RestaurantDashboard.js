@@ -81,21 +81,21 @@ const RestaurantDashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [ordersRes, reservationsRes, categoriesRes] = await Promise.all([
+      const [ordersRes, reservationsRes, menuRes] = await Promise.all([
         axios.get(`${API}/restaurant/orders`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
         axios.get(`${API}/restaurant/reservations`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`${API}/restaurants/${selectedRestaurant.restaurant_id}/categories`, {
+        axios.get(`${API}/restaurants/${selectedRestaurant.restaurant_id}/menu`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
       
       setOrders(ordersRes.data.filter(o => o.restaurant_id === selectedRestaurant.restaurant_id));
       setReservations(reservationsRes.data.filter(r => r.restaurant_id === selectedRestaurant.restaurant_id));
-      setCategories(categoriesRes.data);
+      setCategories(menuRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
