@@ -198,6 +198,7 @@ const HomePage = () => {
               <h1 className="font-heading text-3xl font-bold text-primary" data-testid="app-title">DineDash</h1>
             </div>
             <div className="flex items-center gap-4">
+              <LanguageToggle />
               {isAuthenticated ? (
                 <>
                   {isCustomer && (
