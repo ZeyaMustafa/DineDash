@@ -109,79 +109,207 @@ const RestaurantAuth = () => {
       >
         <div className="bg-white p-8 rounded-2xl shadow-card border border-border">
           <div className="text-center mb-8">
-            <h1 className="font-heading text-4xl font-bold text-primary mb-2" data-testid="restaurant-auth-title">Restaurant Portal</h1>
-            <p className="text-muted-foreground">Manage your restaurant</p>
+            <h1 className="font-heading text-4xl font-bold text-primary mb-2" data-testid="restaurant-auth-title">
+              {step === 1 ? 'Restaurant Portal' : 'Restaurant Details'}
+            </h1>
+            <p className="text-muted-foreground">
+              {step === 1 ? 'Manage your restaurant' : 'Tell us about your restaurant'}
+            </p>
           </div>
 
-          <Tabs value={isLogin ? 'login' : 'signup'} onValueChange={(v) => setIsLogin(v === 'login')}>
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login" data-testid="login-tab">Login</TabsTrigger>
-              <TabsTrigger value="signup" data-testid="signup-tab">Sign Up</TabsTrigger>
-            </TabsList>
+          {step === 1 ? (
+            <Tabs value={isLogin ? 'login' : 'signup'} onValueChange={(v) => setIsLogin(v === 'login')}>
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="login" data-testid="login-tab">Login</TabsTrigger>
+                <TabsTrigger value="signup" data-testid="signup-tab">Sign Up</TabsTrigger>
+              </TabsList>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
+              <form onSubmit={handleAuthSubmit} className="space-y-4">
+                {!isLogin && (
+                  <div>
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required={!isLogin}
+                      data-testid="name-input"
+                    />
+                  </div>
+                )}
+
                 <div>
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
-                    id="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required={!isLogin}
-                    data-testid="name-input"
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    data-testid="email-input"
                   />
                 </div>
-              )}
 
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                    data-testid="password-input"
+                  />
+                </div>
+
+                {!isLogin && (
+                  <div>
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      required={!isLogin}
+                      data-testid="phone-input"
+                    />
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={loading}
+                  data-testid="submit-button"
+                >
+                  {loading ? 'Processing...' : isLogin ? 'Login' : 'Next'}
+                </Button>
+              </form>
+            </Tabs>
+          ) : (
+            <form onSubmit={handleRestaurantSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="restaurant_name">Restaurant Name</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  id="restaurant_name"
+                  type="text"
+                  value={restaurantData.name}
+                  onChange={(e) => setRestaurantData({ ...restaurantData, name: e.target.value })}
                   required
-                  data-testid="email-input"
+                  data-testid="restaurant-name-input"
                 />
               </div>
 
               <div>
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="description">Description</Label>
                 <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  id="description"
+                  type="text"
+                  value={restaurantData.description}
+                  onChange={(e) => setRestaurantData({ ...restaurantData, description: e.target.value })}
                   required
-                  data-testid="password-input"
+                  data-testid="description-input"
                 />
               </div>
 
-              {!isLogin && (
-                <div>
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    required={!isLogin}
-                    data-testid="phone-input"
-                  />
-                </div>
-              )}
+              <div>
+                <Label htmlFor="cuisine">Cuisine Type</Label>
+                <Input
+                  id="cuisine"
+                  type="text"
+                  value={restaurantData.cuisine}
+                  onChange={(e) => setRestaurantData({ ...restaurantData, cuisine: e.target.value })}
+                  placeholder="e.g., Italian, Indian, Chinese"
+                  required
+                  data-testid="cuisine-input"
+                />
+              </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-                data-testid="submit-button"
-              >
-                {loading ? 'Processing...' : isLogin ? 'Login' : 'Sign Up'}
-              </Button>
+              <div>
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  type="text"
+                  value={restaurantData.address}
+                  onChange={(e) => setRestaurantData({ ...restaurantData, address: e.target.value })}
+                  required
+                  data-testid="address-input"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="restaurant_phone">Restaurant Phone</Label>
+                <Input
+                  id="restaurant_phone"
+                  type="tel"
+                  value={restaurantData.phone}
+                  onChange={(e) => setRestaurantData({ ...restaurantData, phone: e.target.value })}
+                  required
+                  data-testid="restaurant-phone-input"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="service_type">Service Type</Label>
+                <select
+                  id="service_type"
+                  value={restaurantData.service_type}
+                  onChange={(e) => setRestaurantData({ ...restaurantData, service_type: e.target.value })}
+                  className="w-full h-10 px-3 rounded-lg border border-input bg-input/50"
+                  data-testid="service-type-select"
+                >
+                  <option value="delivery">Delivery Only</option>
+                  <option value="reservations">Reservations Only</option>
+                  <option value="both">Both Delivery & Reservations</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Food Type</Label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={restaurantData.is_veg}
+                      onChange={(e) => setRestaurantData({ ...restaurantData, is_veg: e.target.checked })}
+                      data-testid="veg-checkbox"
+                    />
+                    <span>Veg</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={restaurantData.is_non_veg}
+                      onChange={(e) => setRestaurantData({ ...restaurantData, is_non_veg: e.target.checked })}
+                      data-testid="non-veg-checkbox"
+                    />
+                    <span>Non-Veg</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setStep(1)}
+                  className="flex-1"
+                  data-testid="back-button"
+                >
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  className="flex-1"
+                  disabled={loading}
+                  data-testid="create-restaurant-button"
+                >
+                  {loading ? 'Creating...' : 'Create Restaurant'}
+                </Button>
+              </div>
             </form>
-          </Tabs>
+          )}
 
           <div className="mt-6 text-center">
             <Button variant="link" onClick={() => navigate('/')} data-testid="back-home-button">
