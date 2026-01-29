@@ -159,11 +159,14 @@ const RestaurantDashboard = () => {
   const handleAddMenuItem = async (e) => {
     e.preventDefault();
     try {
+      const imageUrl = newMenuItem.image_url || foodImages[Math.floor(Math.random() * foodImages.length)];
+      
       await axios.post(
         `${API}/restaurants/${selectedRestaurant.restaurant_id}/items`,
         {
           ...newMenuItem,
-          price: parseFloat(newMenuItem.price)
+          price: parseFloat(newMenuItem.price),
+          image_url: imageUrl
         },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -177,7 +180,7 @@ const RestaurantDashboard = () => {
         description: '',
         price: '',
         is_veg: true,
-        image_url: 'https://images.unsplash.com/photo-1474221379956-afaf88e3d760?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHw0fHxnb3VybWV0JTIwZm9vZCUyMHBsYXRpbmclMjBlbGVnYW50fGVufDB8fHx8MTc2OTY5MjcyNnww&ixlib=rb-4.1.0&q=85'
+        image_url: ''
       });
       fetchData();
     } catch (error) {
