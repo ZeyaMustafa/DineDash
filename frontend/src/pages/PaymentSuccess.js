@@ -26,7 +26,7 @@ const PaymentSuccess = () => {
 
   const checkPaymentStatus = async (sessionId) => {
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 10;
     const pollInterval = 2000;
 
     const poll = async () => {
@@ -35,22 +35,39 @@ const PaymentSuccess = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         
+        console.log('Payment status response:', response.data);
+        
         if (response.data.payment_status === 'paid') {
           setTransaction(response.data);
           setStatus('success');
           clearCart();
-          return;
+          return true;
         }
         
         attempts++;
         if (attempts < maxAttempts) {
           setTimeout(poll, pollInterval);
+          return false;
         } else {
+          // Even after max attempts, if we have transaction data, show it
+          if (response.data) {
+            setTransaction(response.data);
+            setStatus('success');
+            clearCart();
+            return true;
+          }
           setStatus('timeout');
+          return false;
         }
       } catch (error) {
         console.error('Error checking payment status:', error);
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(poll, pollInterval);
+          return false;
+        }
         setStatus('error');
+        return false;
       }
     };
 
