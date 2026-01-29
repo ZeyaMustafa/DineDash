@@ -1,0 +1,317 @@
+{
+  "common": {
+    "appName": "DineDash",
+    "back": "Back",
+    "backToHome": "Back to Home",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "error": "Error",
+    "success": "Success"
+  },
+  "navbar": {
+    "favorites": "Favorites",
+    "cart": "Cart",
+    "profile": "Hi, {{name}}",
+    "dashboard": "Go to Dashboard",
+    "customerLogin": "Customer Login",
+    "restaurantLogin": "Restaurant Login"
+  },
+  "home": {
+    "hero": {
+      "title": "Order. Reserve. Enjoy.",
+      "subtitle": "Discover the best restaurants for delivery and dine-in reservations"
+    },
+    "search": "Search restaurants...",
+    "filters": {
+      "all": "All",
+      "delivery": "Delivery",
+      "reservations": "Reservations",
+      "veg": "Veg Only",
+      "nonVeg": "Non-Veg",
+      "allCuisines": "All Cuisines"
+    },
+    "noRestaurants": "No restaurants found",
+    "tryAdjust": "Try adjusting your filters or search query",
+    "clearFilters": "Clear Filters",
+    "browseRestaurants": "Browse Restaurants",
+    "deliveryTime": "{{min}}-{{max}} min",
+    "reviews": "{{count}} reviews"
+  },
+  "auth": {
+    "customer": {
+      "title": "Customer Login",
+      "subtitle": "Order food or book reservations"
+    },
+    "restaurant": {
+      "title": "Restaurant Portal",
+      "subtitle": "Manage your restaurant",
+      "detailsTitle": "Restaurant Details",
+      "detailsSubtitle": "Tell us about your restaurant"
+    },
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "phone": "Phone",
+    "phoneOptional": "Phone (Optional)",
+    "loginTab": "Login",
+    "signupTab": "Sign Up",
+    "processing": "Processing...",
+    "loginButton": "Login",
+    "signupButton": "Sign Up",
+    "nextButton": "Next",
+    "backButton": "Back",
+    "createRestaurant": "Create Restaurant",
+    "creating": "Creating...",
+    "loginSuccess": "Login successful!",
+    "accountCreated": "Account created successfully!",
+    "addRestaurantDetails": "Now add your restaurant details",
+    "restaurantCreated": "Restaurant profile created successfully!"
+  },
+  "restaurant": {
+    "details": {
+      "name": "Restaurant Name",
+      "description": "Description",
+      "cuisine": "Cuisine Type",
+      "cuisinePlaceholder": "e.g., Italian, Indian, Chinese",
+      "address": "Address",
+      "phone": "Restaurant Phone",
+      "serviceType": "Service Type",
+      "deliveryOnly": "Delivery Only",
+      "reservationsOnly": "Reservations Only",
+      "both": "Both Delivery & Reservations",
+      "foodType": "Food Type",
+      "veg": "Veg",
+      "nonVeg": "Non-Veg"
+    },
+    "page": {
+      "menu": "Menu",
+      "orderDelivery": "Order Delivery",
+      "reserveSeats": "Reserve Seats",
+      "bookTable": "Book a Table",
+      "date": "Date",
+      "time": "Time",
+      "partySize": "Party Size",
+      "person": "Person",
+      "people": "People",
+      "checkAvailability": "Check Availability",
+      "checking": "Checking...",
+      "available": "Available! {{seats}} seats remaining",
+      "minPayment": "Minimum payment: ₹300",
+      "bookReservation": "Book Reservation & Pay",
+      "addToCart": "Add to Cart",
+      "inCart": "{{quantity}} in cart",
+      "addMore": "Add More"
+    },
+    "badges": {
+      "delivers": "DELIVERS",
+      "reservations": "RESERVATIONS",
+      "both": "BOTH"
+    }
+  },
+  "cart": {
+    "title": "Checkout",
+    "orderFrom": "Order from {{name}}",
+    "deliveryDetails": "Delivery Details",
+    "deliveryAddress": "Delivery Address",
+    "deliveryAddressPlaceholder": "Enter your delivery address",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "orderNotes": "Order Notes (Optional)",
+    "orderNotesPlaceholder": "Any special instructions?",
+    "paymentMethod": "Payment Method",
+    "cod": "Cash on Delivery",
+    "stripe": "Pay with Card (Stripe)",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "deliveryFee": "Delivery Fee",
+    "total": "Total",
+    "placeOrder": "Place Order",
+    "processing": "Processing...",
+    "emptyCart": "Your cart is empty",
+    "items": "{{count}} items"
+  },
+  "order": {
+    "tracking": {
+      "title": "Order Tracking",
+      "orderId": "Order ID",
+      "orderItems": "Order Items",
+      "qty": "Qty: {{quantity}}",
+      "deliveryTo": "Delivery to:",
+      "estimatedTime": "Estimated Delivery Time"
+    },
+    "status": {
+      "placed": "Order Placed",
+      "accepted": "Order Accepted",
+      "preparing": "Order Preparation",
+      "outForDelivery": "On the way",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "details": {
+      "address": "Delivery Address",
+      "phone": "Phone",
+      "total": "Total Amount",
+      "paymentMethod": "Payment Method",
+      "paymentStatus": "Payment Status"
+    }
+  },
+  "reservation": {
+    "tracking": {
+      "title": "Reservation Details",
+      "reservationId": "Reservation ID",
+      "date": "Date",
+      "time": "Time",
+      "partySize": "{{size}} People",
+      "amountPaid": "Amount Paid",
+      "paymentStatus": "Payment Status"
+    },
+    "status": {
+      "pendingPayment": "PENDING PAYMENT",
+      "confirmed": "CONFIRMED",
+      "seated": "SEATED",
+      "completed": "COMPLETED",
+      "cancelled": "CANCELLED",
+      "noShow": "NO SHOW"
+    }
+  },
+  "profile": {
+    "title": "My Account",
+    "hello": "Hello, {{name}}!",
+    "orders": "My Orders",
+    "reservations": "My Reservations",
+    "orderHistory": "Order History",
+    "reservationHistory": "Reservation History",
+    "noOrders": "No orders yet",
+    "noReservations": "No reservations yet"
+  },
+  "favorites": {
+    "title": "My Favorites",
+    "saved": "{{count}} saved restaurants",
+    "noFavorites": "No favorites yet",
+    "startAdding": "Start adding restaurants to your favorites to see them here",
+    "removed": "Removed from favorites",
+    "added": "Added to favorites"
+  },
+  "restaurantHome": {
+    "noRestaurant": "No Restaurant Found",
+    "createProfile": "Please create your restaurant profile",
+    "createButton": "Create Restaurant",
+    "stats": {
+      "totalRevenue": "Total Revenue",
+      "pendingOrders": "Pending Orders",
+      "totalOrders": "Total Orders"
+    },
+    "actions": {
+      "manageOrders": "Manage Orders",
+      "manageOrdersDesc": "View and update order status",
+      "manageMenu": "Manage Menu",
+      "manageMenuDesc": "Add or edit menu items",
+      "reservations": "Reservations",
+      "reservationsDesc": "Manage table bookings"
+    },
+    "menu": {
+      "title": "Your Menu",
+      "categories": "{{count}} categories",
+      "items": "{{count}} items",
+      "editMenu": "Edit Menu",
+      "noItems": "No menu items yet",
+      "addItems": "Add Menu Items",
+      "noCategory": "No items in this category"
+    }
+  },
+  "dashboard": {
+    "title": "Restaurant Dashboard",
+    "tabs": {
+      "orders": "Orders",
+      "reservations": "Reservations",
+      "menu": "Menu Management"
+    },
+    "orders": {
+      "current": "Current Orders ({{count}})",
+      "noOrders": "No orders yet",
+      "markPrepared": "Mark as Prepared",
+      "items": "Items: {{count}}",
+      "address": "Address: {{address}}",
+      "phone": "Phone: {{phone}}",
+      "payment": "Payment: {{method}} ({{status}})"
+    },
+    "reservations": {
+      "title": "Reservations ({{count}})",
+      "noReservations": "No reservations yet",
+      "people": "{{size}} people",
+      "amount": "Amount: ₹{{amount}}",
+      "payment": "Payment: {{status}}"
+    },
+    "menu": {
+      "title": "Menu Management",
+      "addCategory": "Add Category",
+      "addMenuItem": "Add Menu Item",
+      "noCategories": "No menu categories yet. Add one to get started!",
+      "noItemsInCategory": "No items in this category yet. Use \"Add Menu Item\" to add items.",
+      "categoryName": "Category Name",
+      "category": "Category",
+      "selectCategory": "Select Category",
+      "itemName": "Item Name",
+      "description": "Description",
+      "price": "Price (₹)",
+      "foodType": "Food Type",
+      "veg": "Veg",
+      "nonVeg": "Non-Veg",
+      "imageUrl": "Image URL (Optional)",
+      "imageUrlPlaceholder": "Leave blank for random food image",
+      "imageUrlHelper": "If left blank, a random food image will be used",
+      "addItem": "Add Item",
+      "deleteConfirm": "Are you sure you want to delete this item?",
+      "itemAdded": "Menu item added!",
+      "itemDeleted": "Menu item deleted!",
+      "categoryAdded": "Category added!",
+      "addCategoryTitle": "Add Menu Category",
+      "addMenuItemTitle": "Add Menu Item"
+    }
+  },
+  "payment": {
+    "success": {
+      "title": "Payment Successful!",
+      "message": "Your payment has been processed successfully.",
+      "transactionId": "Transaction ID",
+      "amount": "Amount",
+      "goHome": "Go to Home",
+      "verifying": "Verifying payment...",
+      "unknownStatus": "Payment Status Unknown",
+      "checkEmail": "We're having trouble verifying your payment. Please check your email for confirmation."
+    },
+    "cancel": {
+      "title": "Payment Cancelled",
+      "message": "Your payment was cancelled. No charges were made.",
+      "goBack": "Go Back",
+      "goHome": "Go to Home"
+    }
+  },
+  "messages": {
+    "loginRequired": "Please login to add items to cart",
+    "itemAdded": "{{name}} added to cart!",
+    "orderPlaced": "Order placed successfully!",
+    "orderStatusUpdated": "Order status updated",
+    "reservationStatusUpdated": "Reservation status updated",
+    "favoriteAdded": "Added to favorites",
+    "favoriteRemoved": "Removed from favorites",
+    "failedToLoad": "Failed to load data",
+    "failedToUpdate": "Failed to update",
+    "restaurantNotFound": "Restaurant not found",
+    "fillDeliveryDetails": "Please fill in delivery details",
+    "selectDateTime": "Please select date and time",
+    "noSeatsAvailable": "No seats available for this slot",
+    "checkAvailabilityFirst": "Please check availability first",
+    "onlyCustomersReserve": "Only customers can make reservations"
+  }
+}
