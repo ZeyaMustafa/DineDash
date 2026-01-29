@@ -83,6 +83,7 @@ const OrderTracking = () => {
               {statusSteps.map((step, index) => {
                 const Icon = step.icon;
                 const isActive = index <= currentStepIndex;
+                const timestamp = order.status_timestamps?.[step.key];
                 return (
                   <div key={step.key} className="flex items-center gap-4" data-testid={`status-${step.key}`}>
                     <div
@@ -96,6 +97,11 @@ const OrderTracking = () => {
                       <p className={`font-semibold ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
                         {step.label}
                       </p>
+                      {timestamp && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {new Date(timestamp).toLocaleString()}
+                        </p>
+                      )}
                     </div>
                   </div>
                 );
