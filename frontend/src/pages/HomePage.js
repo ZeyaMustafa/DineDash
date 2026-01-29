@@ -16,18 +16,18 @@ import LanguageToggle from '@/components/LanguageToggle';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ServiceBadge = ({ serviceType }) => {
+const ServiceBadge = ({ serviceType, t }) => {
   const badges = {
-    delivery: { text: 'DELIVERS', className: 'bg-blue-100 text-blue-700' },
-    reservations: { text: 'RESERVATIONS', className: 'bg-amber-100 text-amber-700' },
-    both: { text: 'BOTH', className: 'bg-purple-100 text-purple-700' }
+    delivery: { textKey: 'restaurant.badges.delivers', className: 'bg-blue-100 text-blue-700' },
+    reservations: { textKey: 'restaurant.badges.reservations', className: 'bg-amber-100 text-amber-700' },
+    both: { textKey: 'restaurant.badges.both', className: 'bg-purple-100 text-purple-700' }
   };
   
   const badge = badges[serviceType] || badges.both;
   
   return (
     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badge.className}`} data-testid={`service-badge-${serviceType}`}>
-      {badge.text}
+      {t(badge.textKey)}
     </span>
   );
 };
