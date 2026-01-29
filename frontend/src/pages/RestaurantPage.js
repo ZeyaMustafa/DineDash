@@ -18,8 +18,8 @@ const API = `${BACKEND_URL}/api`;
 const RestaurantPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, token, isAuthenticated, isCustomer } = useAuth();
-  const { addToCart, cart } = useCart();
+  const { user, token, logout, isAuthenticated, isCustomer, isRestaurant } = useAuth();
+  const { addToCart, cart, getTotalItems } = useCart();
   const [restaurant, setRestaurant] = useState(null);
   const [menu, setMenu] = useState([]);
   const [dietFilter, setDietFilter] = useState('all');
