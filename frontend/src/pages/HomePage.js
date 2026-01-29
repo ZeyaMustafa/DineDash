@@ -121,6 +121,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated, isCustomer, isRestaurant, token } = useAuth();
   const { getTotalItems } = useCart();
+  const { t } = useTranslation();
   const [restaurants, setRestaurants] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
