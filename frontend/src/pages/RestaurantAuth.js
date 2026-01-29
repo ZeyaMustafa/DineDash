@@ -17,14 +17,28 @@ const RestaurantAuth = () => {
   const { login } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(1); // Step 1: Auth, Step 2: Restaurant Details
+  const [authData, setAuthData] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
     phone: ''
   });
+  const [restaurantData, setRestaurantData] = useState({
+    name: '',
+    description: '',
+    cuisine: '',
+    address: '',
+    phone: '',
+    hours: '9:00 AM - 10:00 PM',
+    service_type: 'both',
+    is_veg: false,
+    is_non_veg: false,
+    image_url: 'https://images.unsplash.com/photo-1687945512099-400cbe94460c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjByZXN0YXVyYW50JTIwaW50ZXJpb3IlMjBkZXNpZ258ZW58MHx8fHwxNzY5NjkyNzI5fDA&ixlib=rb-4.1.0&q=85'
+  });
 
-  const handleSubmit = async (e) => {
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -32,17 +46,55 @@ const RestaurantAuth = () => {
       const endpoint = isLogin ? '/auth/restaurant/login' : '/auth/restaurant/signup';
       const response = await axios.post(`${API}${endpoint}`, formData);
       
-      login(response.data.token, {
-        user_id: response.data.user_id,
-        email: response.data.email,
-        name: response.data.name,
-        role: response.data.role
-      });
-      
-      toast.success(isLogin ? 'Login successful!' : 'Account created successfully!');
-      navigate('/restaurant-dashboard');
+      if (isLogin) {
+        // For login, go directly to dashboard
+        login(response.data.token, {
+          user_id: response.data.user_id,
+          email: response.data.email,
+          name: response.data.name,
+          role: response.data.role
+        });
+        toast.success('Login successful!');
+        navigate('/restaurant-dashboard');
+      } else {
+        // For signup, store auth data and proceed to restaurant details
+        setAuthData(response.data);
+        setStep(2);
+        toast.success('Account created! Now add your restaurant details.');
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRestaurantSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // Create restaurant profile
+      await axios.post(
+        `${API}/restaurants`,
+        restaurantData,
+        {
+          headers: { Authorization: `Bearer ${authData.token}` }
+        }
+      );
+
+      // Now login with the auth data
+      login(authData.token, {
+        user_id: authData.user_id,
+        email: authData.email,
+        name: authData.name,
+        role: authData.role
+      });
+      
+      toast.success('Restaurant profile created successfully!');
+      navigate('/restaurant-dashboard');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to create restaurant profile');
     } finally {
       setLoading(false);
     }
