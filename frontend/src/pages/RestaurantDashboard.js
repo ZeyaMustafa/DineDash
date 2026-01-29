@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Package, Calendar, Plus, DollarSign, TrendingUp, Clock, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
