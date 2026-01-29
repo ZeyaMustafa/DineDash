@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Package, Calendar } from 'lucide-react';
+import { ArrowLeft, Package, Calendar, Plus, DollarSign, TrendingUp, Clock, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
@@ -13,36 +16,77 @@ const API = `${BACKEND_URL}/api`;
 
 const RestaurantDashboard = () => {
   const navigate = useNavigate();
-  const { token, isAuthenticated, isRestaurant } = useAuth();
+  const { token, isAuthenticated, isRestaurant, user } = useAuth();
+  const [restaurants, setRestaurants] = useState([]);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [orders, setOrders] = useState([]);
   const [reservations, setReservations] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAddMenuItem, setShowAddMenuItem] = useState(false);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState({ name: '', display_order: 0 });
+  const [newMenuItem, setNewMenuItem] = useState({
+    category_id: '',
+    name: '',
+    description: '',
+    price: '',
+    is_veg: true,
+    image_url: 'https://images.unsplash.com/photo-1474221379956-afaf88e3d760?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHw0fHxnb3VybWV0JTIwZm9vZCUyMHBsYXRpbmclMjBlbGVnYW50fGVufDB8fHx8MTc2OTY5MjcyNnww&ixlib=rb-4.1.0&q=85'
+  });
 
   useEffect(() => {
     if (!isAuthenticated || !isRestaurant) {
       navigate('/restaurant-auth');
       return;
     }
-    fetchData();
+    fetchRestaurants();
   }, []);
+
+  useEffect(() => {
+    if (selectedRestaurant) {
+      fetchData();
+      const interval = setInterval(fetchData, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [selectedRestaurant]);
+
+  const fetchRestaurants = async () => {
+    try {
+      const response = await axios.get(`${API}/restaurants`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const myRestaurants = response.data.filter(r => r.owner_id === user.user_id);
+      setRestaurants(myRestaurants);
+      if (myRestaurants.length > 0) {
+        setSelectedRestaurant(myRestaurants[0]);
+      }
+    } catch (error) {
+      console.error('Error fetching restaurants:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchData = async () => {
     try {
-      const [ordersRes, reservationsRes] = await Promise.all([
+      const [ordersRes, reservationsRes, categoriesRes] = await Promise.all([
         axios.get(`${API}/restaurant/orders`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
         axios.get(`${API}/restaurant/reservations`, {
           headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${API}/restaurants/${selectedRestaurant.restaurant_id}/categories`, {
+          headers: { Authorization: `Bearer ${token}` }
         })
       ]);
-      setOrders(ordersRes.data);
-      setReservations(reservationsRes.data);
+      
+      setOrders(ordersRes.data.filter(o => o.restaurant_id === selectedRestaurant.restaurant_id));
+      setReservations(reservationsRes.data.filter(r => r.restaurant_id === selectedRestaurant.restaurant_id));
+      setCategories(categoriesRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error('Failed to load data');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -62,6 +106,10 @@ const RestaurantDashboard = () => {
     }
   };
 
+  const markOrderAsPrepared = async (orderId) => {
+    await updateOrderStatus(orderId, 'OUT_FOR_DELIVERY');
+  };
+
   const updateReservationStatus = async (reservationId, status) => {
     try {
       await axios.put(
@@ -78,10 +126,78 @@ const RestaurantDashboard = () => {
     }
   };
 
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        `${API}/restaurants/${selectedRestaurant.restaurant_id}/categories`,
+        newCategory,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success('Category added!');
+      setShowAddCategory(false);
+      setNewCategory({ name: '', display_order: 0 });
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to add category');
+    }
+  };
+
+  const handleAddMenuItem = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        `${API}/restaurants/${selectedRestaurant.restaurant_id}/items`,
+        {
+          ...newMenuItem,
+          price: parseFloat(newMenuItem.price)
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success('Menu item added!');
+      setShowAddMenuItem(false);
+      setNewMenuItem({
+        category_id: '',
+        name: '',
+        description: '',
+        price: '',
+        is_veg: true,
+        image_url: 'https://images.unsplash.com/photo-1474221379956-afaf88e3d760?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHw0fHxnb3VybWV0JTIwZm9vZCUyMHBsYXRpbmclMjBlbGVnYW50fGVufDB8fHx8MTc2OTY5MjcyNnww&ixlib=rb-4.1.0&q=85'
+      });
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to add menu item');
+    }
+  };
+
+  const getOrderStats = () => {
+    const total = orders.reduce((sum, order) => sum + order.total_amount, 0);
+    const pending = orders.filter(o => ['PLACED', 'ACCEPTED', 'PREPARING'].includes(o.status)).length;
+    return { total, pending, count: orders.length };
+  };
+
+  const stats = getOrderStats();
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (restaurants.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDFBF7' }}>
+        <div className="text-center">
+          <h2 className="font-heading text-3xl font-bold mb-4">No Restaurant Found</h2>
+          <p className="text-muted-foreground mb-6">Please create a restaurant profile first</p>
+          <Button onClick={() => navigate('/restaurant-auth')}>Create Restaurant</Button>
+        </div>
       </div>
     );
   }
@@ -92,16 +208,57 @@ const RestaurantDashboard = () => {
         <div className="container mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
           <Button variant="ghost" onClick={() => navigate('/')} data-testid="back-button">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            Home
           </Button>
-          <h1 className="font-heading text-2xl font-bold" data-testid="dashboard-title">Restaurant Dashboard</h1>
+          <h1 className="font-heading text-2xl font-bold" data-testid="dashboard-title">
+            {selectedRestaurant?.name}
+          </h1>
           <div></div>
         </div>
       </header>
 
       <div className="container mx-auto px-4 md:px-8 py-12">
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-xl shadow-card border border-border">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Total Revenue</p>
+                <p className="text-2xl font-bold">₹{stats.total.toFixed(2)}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-6 rounded-xl shadow-card border border-border">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-warning/10 rounded-full flex items-center justify-center">
+                <Clock className="w-6 h-6 text-warning" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Pending Orders</p>
+                <p className="text-2xl font-bold">{stats.pending}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-card border border-border">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-success" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Total Orders</p>
+                <p className="text-2xl font-bold">{stats.count}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <Tabs defaultValue="orders" className="space-y-8">
-          <TabsList className="grid w-full md:w-96 grid-cols-2">
+          <TabsList className="grid w-full md:w-[600px] grid-cols-3">
             <TabsTrigger value="orders" data-testid="orders-tab">
               <Package className="w-4 h-4 mr-2" />
               Orders
@@ -110,11 +267,15 @@ const RestaurantDashboard = () => {
               <Calendar className="w-4 h-4 mr-2" />
               Reservations
             </TabsTrigger>
+            <TabsTrigger value="menu" data-testid="menu-tab">
+              <Plus className="w-4 h-4 mr-2" />
+              Menu Management
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="orders">
             <div className="space-y-4">
-              <h2 className="font-heading text-3xl font-semibold">Orders ({orders.length})</h2>
+              <h2 className="font-heading text-3xl font-semibold">Current Orders ({orders.length})</h2>
               {orders.length === 0 ? (
                 <p className="text-muted-foreground">No orders yet</p>
               ) : (
@@ -129,8 +290,11 @@ const RestaurantDashboard = () => {
                         <div>
                           <p className="font-mono text-sm text-muted-foreground">#{order.order_id.slice(0, 8)}</p>
                           <p className="font-bold text-xl">₹{order.total_amount}</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {new Date(order.created_at).toLocaleString()}
+                          </p>
                         </div>
-                        <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex flex-col gap-2">
                           <Select
                             value={order.status}
                             onValueChange={(status) => updateOrderStatus(order.order_id, status)}
@@ -139,20 +303,30 @@ const RestaurantDashboard = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="PLACED">Placed</SelectItem>
-                              <SelectItem value="ACCEPTED">Accepted</SelectItem>
-                              <SelectItem value="PREPARING">Preparing</SelectItem>
-                              <SelectItem value="OUT_FOR_DELIVERY">Out for Delivery</SelectItem>
+                              <SelectItem value="PLACED">Order Placed</SelectItem>
+                              <SelectItem value="ACCEPTED">Order Accepted</SelectItem>
+                              <SelectItem value="PREPARING">Order Preparation</SelectItem>
+                              <SelectItem value="OUT_FOR_DELIVERY">On the way</SelectItem>
                               <SelectItem value="DELIVERED">Delivered</SelectItem>
                               <SelectItem value="CANCELLED">Cancelled</SelectItem>
                             </SelectContent>
                           </Select>
+                          {order.status === 'PREPARING' && (
+                            <Button
+                              size="sm"
+                              onClick={() => markOrderAsPrepared(order.order_id)}
+                              data-testid={`mark-prepared-${order.order_id}`}
+                            >
+                              Mark as Prepared
+                            </Button>
+                          )}
                         </div>
                       </div>
                       <div className="text-sm text-muted-foreground space-y-1">
                         <p>Address: {order.delivery_address}</p>
                         <p>Phone: {order.delivery_phone}</p>
                         <p>Payment: {order.payment_method} ({order.payment_status})</p>
+                        <p>Items: {order.items?.length || 0}</p>
                       </div>
                     </div>
                   ))}
@@ -180,29 +354,157 @@ const RestaurantDashboard = () => {
                           <p className="font-bold text-xl">{reservation.date} at {reservation.time}</p>
                           <p className="text-muted-foreground">{reservation.party_size} people</p>
                         </div>
-                        <div className="flex flex-col md:flex-row gap-4">
-                          <Select
-                            value={reservation.status}
-                            onValueChange={(status) => updateReservationStatus(reservation.reservation_id, status)}
-                          >
-                            <SelectTrigger className="w-48" data-testid={`reservation-status-${reservation.reservation_id}`}>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="PENDING_PAYMENT">Pending Payment</SelectItem>
-                              <SelectItem value="CONFIRMED">Confirmed</SelectItem>
-                              <SelectItem value="SEATED">Seated</SelectItem>
-                              <SelectItem value="COMPLETED">Completed</SelectItem>
-                              <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                              <SelectItem value="NO_SHOW">No Show</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                        <Select
+                          value={reservation.status}
+                          onValueChange={(status) => updateReservationStatus(reservation.reservation_id, status)}
+                        >
+                          <SelectTrigger className="w-48" data-testid={`reservation-status-${reservation.reservation_id}`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="PENDING_PAYMENT">Pending Payment</SelectItem>
+                            <SelectItem value="CONFIRMED">Confirmed</SelectItem>
+                            <SelectItem value="SEATED">Seated</SelectItem>
+                            <SelectItem value="COMPLETED">Completed</SelectItem>
+                            <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                            <SelectItem value="NO_SHOW">No Show</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="text-sm text-muted-foreground space-y-1">
                         <p>Amount: ₹{reservation.amount}</p>
                         <p>Payment: {reservation.payment_status}</p>
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="menu">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-heading text-3xl font-semibold">Menu Management</h2>
+                <div className="flex gap-2">
+                  <Dialog open={showAddCategory} onOpenChange={setShowAddCategory}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" data-testid="add-category-button">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Category
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add Menu Category</DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={handleAddCategory} className="space-y-4">
+                        <div>
+                          <Label htmlFor="category_name">Category Name</Label>
+                          <Input
+                            id="category_name"
+                            value={newCategory.name}
+                            onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                            required
+                          />
+                        </div>
+                        <Button type="submit" className="w-full">Add Category</Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+
+                  <Dialog open={showAddMenuItem} onOpenChange={setShowAddMenuItem}>
+                    <DialogTrigger asChild>
+                      <Button data-testid="add-menu-item-button">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Menu Item
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add Menu Item</DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={handleAddMenuItem} className="space-y-4">
+                        <div>
+                          <Label htmlFor="category">Category</Label>
+                          <select
+                            id="category"
+                            value={newMenuItem.category_id}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, category_id: e.target.value })}
+                            className="w-full h-10 px-3 rounded-lg border border-input bg-input/50"
+                            required
+                          >
+                            <option value="">Select Category</option>
+                            {categories.map((cat) => (
+                              <option key={cat.category_id} value={cat.category_id}>{cat.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <Label htmlFor="item_name">Item Name</Label>
+                          <Input
+                            id="item_name"
+                            value={newMenuItem.name}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="description">Description</Label>
+                          <Input
+                            id="description"
+                            value={newMenuItem.description}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, description: e.target.value })}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="price">Price (₹)</Label>
+                          <Input
+                            id="price"
+                            type="number"
+                            step="0.01"
+                            value={newMenuItem.price}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label>Food Type</Label>
+                          <div className="flex gap-4">
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="radio"
+                                checked={newMenuItem.is_veg}
+                                onChange={() => setNewMenuItem({ ...newMenuItem, is_veg: true })}
+                              />
+                              <span>Veg</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="radio"
+                                checked={!newMenuItem.is_veg}
+                                onChange={() => setNewMenuItem({ ...newMenuItem, is_veg: false })}
+                              />
+                              <span>Non-Veg</span>
+                            </label>
+                          </div>
+                        </div>
+                        <Button type="submit" className="w-full">Add Item</Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+
+              {categories.length === 0 ? (
+                <p className="text-muted-foreground">No menu categories yet. Add one to get started!</p>
+              ) : (
+                <div className="space-y-6">
+                  {categories.map((category) => (
+                    <div key={category.category_id} className="bg-white p-6 rounded-xl shadow-card border border-border">
+                      <h3 className="font-heading text-2xl font-semibold mb-4">{category.name}</h3>
+                      <p className="text-sm text-muted-foreground">Add items to this category using the "Add Menu Item" button above.</p>
                     </div>
                   ))}
                 </div>
