@@ -136,14 +136,17 @@ const HomePage = () => {
                     </>
                   )}
                   {isRestaurant && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate('/restaurant-dashboard')}
-                      data-testid="dashboard-button"
-                    >
-                      Dashboard
-                    </Button>
+                    <>
+                      <Button
+                        size="sm"
+                        onClick={() => navigate('/restaurant-dashboard')}
+                        data-testid="dashboard-button"
+                        className="bg-primary text-primary-foreground"
+                      >
+                        Go to Dashboard
+                      </Button>
+                      <span className="text-sm text-muted-foreground">Hi, {user?.name}</span>
+                    </>
                   )}
                   <Button variant="ghost" size="sm" onClick={logout} data-testid="logout-button">
                     <LogOut className="w-4 h-4" />
