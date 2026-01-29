@@ -447,6 +447,9 @@ async def get_menu_categories(restaurant_id: str):
 async def create_order(order_data: OrderCreate, current_user: dict = Depends(get_current_user)):
     total_amount = sum(item.price * item.quantity for item in order_data.items)
     
+    now = datetime.now(timezone.utc)
+    status_timestamps = {"PLACED": now.isoformat()}
+    
     order = Order(
         user_id=current_user['user_id'],
         restaurant_id=order_data.restaurant_id,
@@ -458,11 +461,15 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
         payment_method=order_data.payment_method,
         payment_status="paid" if order_data.payment_method == "COD" else "pending",
         status="PLACED",
-        estimated_delivery_time=datetime.now(timezone.utc) + timedelta(minutes=45)
+        preparation_time_minutes=30,
+        estimated_delivery_time=now + timedelta(minutes=45),
+        status_timestamps=status_timestamps,
+        updated_at=now
     )
     
     doc = order.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
+    doc['updated_at'] = doc['updated_at'].isoformat()
     if doc['estimated_delivery_time']:
         doc['estimated_delivery_time'] = doc['estimated_delivery_time'].isoformat()
     await db.orders.insert_one(doc)
