@@ -29,6 +29,20 @@ async def seed_database():
     
     print("Cleared existing data...")
     
+    # Create admin user
+    admin_user = {
+        "user_id": str(uuid.uuid4()),
+        "email": "admin@dinedash.com",
+        "password_hash": hash_password("admin123"),
+        "phone": "+919999999999",
+        "name": "Admin User",
+        "role": "admin",
+        "status": "active",
+        "created_at": "2025-01-01T00:00:00Z"
+    }
+    await db.users.insert_one(admin_user)
+    print(f"Created admin user: {admin_user['email']} / admin123")
+    
     demo_customer = {
         "user_id": str(uuid.uuid4()),
         "email": "customer@demo.com",
@@ -36,6 +50,7 @@ async def seed_database():
         "phone": "+919876543210",
         "name": "Demo Customer",
         "role": "customer",
+        "status": "active",
         "created_at": "2025-01-01T00:00:00Z"
     }
     await db.users.insert_one(demo_customer)
