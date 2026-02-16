@@ -626,23 +626,12 @@ const AdminDashboard = () => {
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search users..."
+                  placeholder="Search customers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
                 />
               </div>
-              <Select value={roleFilter} onValueChange={setRoleFilter}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="customer">Customers</SelectItem>
-                  <SelectItem value="restaurant">Restaurants</SelectItem>
-                  <SelectItem value="admin">Admins</SelectItem>
-                </SelectContent>
-              </Select>
               <Button variant="outline" onClick={fetchDashboardData}>
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Refresh
@@ -653,9 +642,9 @@ const AdminDashboard = () => {
               <table className="w-full">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium">User</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">Customer</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Email</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Role</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">Phone</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Activity</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
@@ -669,55 +658,62 @@ const AdminDashboard = () => {
                           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                             <span className="text-primary font-medium">{userItem.name?.charAt(0).toUpperCase()}</span>
                           </div>
-                          <div>
-                            <p className="font-medium">{userItem.name}</p>
-                            {userItem.restaurant && (
-                              <p className="text-xs text-muted-foreground">Restaurant: {userItem.restaurant.name}</p>
-                            )}
-                          </div>
+                          <p className="font-medium">{userItem.name}</p>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm">{userItem.email}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          userItem.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                          userItem.role === 'restaurant' ? 'bg-blue-100 text-blue-700' :
-                          'bg-green-100 text-green-700'
-                        }`}>
-                          {userItem.role}
-                        </span>
-                      </td>
+                      <td className="px-4 py-3 text-sm">{userItem.phone || '-'}</td>
                       <td className="px-4 py-3 text-sm">
-                        {userItem.role === 'customer' && (
-                          <span>{userItem.order_count || 0} orders, {userItem.reservation_count || 0} reservations</span>
-                        )}
-                        {userItem.role === 'restaurant' && (
-                          <span>Restaurant owner</span>
-                        )}
-                        {userItem.role === 'admin' && (
-                          <span>Administrator</span>
-                        )}
+                        <span>{userItem.order_count || 0} orders, {userItem.reservation_count || 0} reservations</span>
                       </td>
                       <td className="px-4 py-3">
                         <StatusBadge status={userItem.status || 'active'} />
                       </td>
                       <td className="px-4 py-3">
-                        {userItem.role !== 'admin' && (
-                          <div className="flex items-center gap-2">
-                            {userItem.status !== 'suspended' ? (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-yellow-600"
-                                onClick={() => handleUserStatus(userItem.user_id, 'suspended')}
-                              >
-                                <Ban className="w-4 h-4" />
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-green-600"
+                        <div className="flex items-center gap-2">
+                          {userItem.status !== 'suspended' ? (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-yellow-600"
+                              onClick={() => handleUserStatus(userItem.user_id, 'suspended')}
+                              title="Suspend user"
+                            >
+                              <Ban className="w-4 h-4" />
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-green-600"
+                              onClick={() => handleUserStatus(userItem.user_id, 'active')}
+                              title="Activate user"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-600"
+                            onClick={() => handleDeleteUser(userItem.user_id)}
+                            title="Delete user"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {filteredUsers.length === 0 && (
+                <div className="p-8 text-center text-muted-foreground">
+                  No customers found
+                </div>
+              )}
+            </div>
+          </TabsContent>
                                 onClick={() => handleUserStatus(userItem.user_id, 'active')}
                               >
                                 <CheckCircle className="w-4 h-4" />
