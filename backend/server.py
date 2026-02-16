@@ -1150,22 +1150,17 @@ async def admin_update_reservation_status(reservation_id: str, status_update: Re
 
 @api_router.get("/admin/users")
 async def admin_get_all_users(role: Optional[str] = None, current_user: dict = Depends(get_current_admin_user)):
-    query = {}
-    if role:
-        query["role"] = role
+    # Only show customers in the users list (restaurants are managed in restaurants tab)
+    query = {"role": "customer"}
     
     users = await db.users.find(query, {"_id": 0, "password_hash": 0}).to_list(1000)
     
     # Add stats for each user
     for user in users:
-        if user['role'] == 'customer':
-            order_count = await db.orders.count_documents({"user_id": user['user_id']})
-            reservation_count = await db.reservations.count_documents({"user_id": user['user_id']})
-            user['order_count'] = order_count
-            user['reservation_count'] = reservation_count
-        elif user['role'] == 'restaurant':
-            restaurant = await db.restaurants.find_one({"owner_id": user['user_id']}, {"_id": 0, "name": 1, "restaurant_id": 1})
-            user['restaurant'] = restaurant
+        order_count = await db.orders.count_documents({"user_id": user['user_id']})
+        reservation_count = await db.reservations.count_documents({"user_id": user['user_id']})
+        user['order_count'] = order_count
+        user['reservation_count'] = reservation_count
     
     return users
 
