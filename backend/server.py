@@ -382,6 +382,9 @@ async def restaurant_login(credentials: UserLogin):
 @api_router.get("/restaurants")
 async def get_restaurants(search: Optional[str] = None, cuisine: Optional[str] = None, diet: Optional[str] = None, service_type: Optional[str] = None):
     query = {}
+    # Filter out suspended restaurants
+    query["status"] = {"$ne": "suspended"}
+    
     if search:
         query["name"] = {"$regex": search, "$options": "i"}
     if cuisine:
