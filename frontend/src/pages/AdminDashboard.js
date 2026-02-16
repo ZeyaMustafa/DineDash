@@ -714,33 +714,6 @@ const AdminDashboard = () => {
               )}
             </div>
           </TabsContent>
-                                onClick={() => handleUserStatus(userItem.user_id, 'active')}
-                              >
-                                <CheckCircle className="w-4 h-4" />
-                              </Button>
-                            )}
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="text-red-600"
-                              onClick={() => handleDeleteUser(userItem.user_id)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {filteredUsers.length === 0 && (
-                <div className="p-8 text-center text-muted-foreground">
-                  No users found
-                </div>
-              )}
-            </div>
-          </TabsContent>
         </Tabs>
       </div>
     </div>
