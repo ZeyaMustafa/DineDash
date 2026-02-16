@@ -6,6 +6,8 @@ import RestaurantHomePage from './pages/RestaurantHomePage';
 import RestaurantPage from './pages/RestaurantPage';
 import CustomerAuth from './pages/CustomerAuth';
 import RestaurantAuth from './pages/RestaurantAuth';
+import AdminAuth from './pages/AdminAuth';
+import AdminDashboard from './pages/AdminDashboard';
 import CartCheckout from './pages/CartCheckout';
 import OrderTracking from './pages/OrderTracking';
 import ReservationTracking from './pages/ReservationTracking';
@@ -19,7 +21,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import '@/App.css';
 
 const HomeRedirect = () => {
-  const { isRestaurant } = useAuth();
+  const { isRestaurant, isAdmin } = useAuth();
+  if (isAdmin) return <Navigate to="/admin" replace />;
   return isRestaurant ? <RestaurantHomePage /> : <HomePage />;
 };
 
@@ -34,6 +37,8 @@ function App() {
               <Route path="/restaurant/:id" element={<RestaurantPage />} />
               <Route path="/customer-auth" element={<CustomerAuth />} />
               <Route path="/restaurant-auth" element={<RestaurantAuth />} />
+              <Route path="/admin-auth" element={<AdminAuth />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/cart" element={<CartCheckout />} />
               <Route path="/orders/:orderId" element={<OrderTracking />} />
               <Route path="/reservations/:reservationId" element={<ReservationTracking />} />
