@@ -499,6 +499,13 @@ async def delete_menu_item(restaurant_id: str, item_id: str, current_user: dict 
 
 @api_router.post("/orders", response_model=Order)
 async def create_order(order_data: OrderCreate, current_user: dict = Depends(get_current_user)):
+    # Check if restaurant is suspended
+    restaurant = await db.restaurants.find_one({"restaurant_id": order_data.restaurant_id}, {"_id": 0})
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    if restaurant.get('status') == 'suspended':
+        raise HTTPException(status_code=403, detail="This restaurant is currently unavailable and not accepting orders")
+    
     total_amount = sum(item.price * item.quantity for item in order_data.items)
     
     now = datetime.now(timezone.utc)
