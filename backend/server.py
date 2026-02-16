@@ -416,6 +416,11 @@ async def get_restaurant(restaurant_id: str):
     restaurant = await db.restaurants.find_one({"restaurant_id": restaurant_id}, {"_id": 0})
     if not restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
+    
+    # Check if restaurant is suspended
+    if restaurant.get('status') == 'suspended':
+        raise HTTPException(status_code=403, detail="This restaurant is currently unavailable")
+    
     return restaurant
 
 @api_router.get("/restaurants/{restaurant_id}/menu")
