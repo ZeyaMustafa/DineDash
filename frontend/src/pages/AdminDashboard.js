@@ -77,7 +77,6 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [roleFilter, setRoleFilter] = useState('all');
 
   useEffect(() => {
     if (!isAdmin) {
