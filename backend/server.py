@@ -939,6 +939,248 @@ async def stripe_webhook(request: Request):
         logger.error(f"Webhook error: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
 
+# ============= ADMIN AUTH ROUTES =============
+
+@api_router.post("/auth/admin/login", response_model=TokenResponse)
+async def admin_login(credentials: UserLogin):
+    user = await db.users.find_one({"email": credentials.email, "role": "admin"}, {"_id": 0})
+    if not user or not verify_password(credentials.password, user['password_hash']):
+        raise HTTPException(status_code=401, detail="Invalid admin credentials")
+    
+    token = create_token(user['user_id'], user['email'], user['role'])
+    return TokenResponse(token=token, user_id=user['user_id'], email=user['email'], name=user['name'], role=user['role'])
+
+# ============= ADMIN DASHBOARD ROUTES =============
+
+@api_router.get("/admin/dashboard/stats")
+async def get_admin_dashboard_stats(current_user: dict = Depends(get_current_admin_user)):
+    # Get counts
+    total_users = await db.users.count_documents({"role": "customer"})
+    total_restaurants = await db.restaurants.count_documents({})
+    total_orders = await db.orders.count_documents({})
+    total_reservations = await db.reservations.count_documents({})
+    
+    # Get pending items
+    pending_orders = await db.orders.count_documents({"status": {"$in": ["PLACED", "ACCEPTED", "PREPARING"]}})
+    pending_reservations = await db.reservations.count_documents({"status": "PENDING_PAYMENT"})
+    
+    # Calculate revenue
+    orders = await db.orders.find({"payment_status": "paid"}, {"_id": 0, "total_amount": 1}).to_list(10000)
+    order_revenue = sum(o.get('total_amount', 0) for o in orders)
+    
+    reservations = await db.reservations.find({"payment_status": "paid"}, {"_id": 0, "amount": 1}).to_list(10000)
+    reservation_revenue = sum(r.get('amount', 0) for r in reservations)
+    
+    total_revenue = order_revenue + reservation_revenue
+    
+    # Get recent activity (last 7 days)
+    seven_days_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    recent_orders = await db.orders.count_documents({"created_at": {"$gte": seven_days_ago}})
+    recent_reservations = await db.reservations.count_documents({"created_at": {"$gte": seven_days_ago}})
+    
+    return {
+        "total_users": total_users,
+        "total_restaurants": total_restaurants,
+        "total_orders": total_orders,
+        "total_reservations": total_reservations,
+        "pending_orders": pending_orders,
+        "pending_reservations": pending_reservations,
+        "total_revenue": total_revenue,
+        "order_revenue": order_revenue,
+        "reservation_revenue": reservation_revenue,
+        "recent_orders": recent_orders,
+        "recent_reservations": recent_reservations
+    }
+
+# ============= ADMIN RESTAURANT MANAGEMENT =============
+
+@api_router.get("/admin/restaurants")
+async def admin_get_all_restaurants(current_user: dict = Depends(get_current_admin_user)):
+    restaurants = await db.restaurants.find({}, {"_id": 0}).to_list(1000)
+    
+    # Add owner info and stats for each restaurant
+    for restaurant in restaurants:
+        owner = await db.users.find_one({"user_id": restaurant['owner_id']}, {"_id": 0, "name": 1, "email": 1})
+        restaurant['owner'] = owner or {"name": "Unknown", "email": "Unknown"}
+        
+        # Get order stats
+        order_count = await db.orders.count_documents({"restaurant_id": restaurant['restaurant_id']})
+        reservation_count = await db.reservations.count_documents({"restaurant_id": restaurant['restaurant_id']})
+        restaurant['order_count'] = order_count
+        restaurant['reservation_count'] = reservation_count
+        
+        # Get revenue
+        orders = await db.orders.find({"restaurant_id": restaurant['restaurant_id'], "payment_status": "paid"}, {"_id": 0, "total_amount": 1}).to_list(10000)
+        restaurant['revenue'] = sum(o.get('total_amount', 0) for o in orders)
+    
+    return restaurants
+
+@api_router.put("/admin/restaurants/{restaurant_id}/status")
+async def admin_update_restaurant_status(restaurant_id: str, request: Request, current_user: dict = Depends(get_current_admin_user)):
+    body = await request.json()
+    status = body.get('status')  # 'approved', 'suspended', 'rejected'
+    
+    if status not in ['approved', 'suspended', 'rejected']:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    result = await db.restaurants.update_one(
+        {"restaurant_id": restaurant_id},
+        {"$set": {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    
+    return {"message": f"Restaurant {status} successfully"}
+
+@api_router.delete("/admin/restaurants/{restaurant_id}")
+async def admin_delete_restaurant(restaurant_id: str, current_user: dict = Depends(get_current_admin_user)):
+    # Delete restaurant and all related data
+    await db.restaurants.delete_one({"restaurant_id": restaurant_id})
+    await db.menu_categories.delete_many({"restaurant_id": restaurant_id})
+    await db.menu_items.delete_many({"restaurant_id": restaurant_id})
+    
+    return {"message": "Restaurant deleted successfully"}
+
+# ============= ADMIN ORDER MANAGEMENT =============
+
+@api_router.get("/admin/orders")
+async def admin_get_all_orders(status: Optional[str] = None, current_user: dict = Depends(get_current_admin_user)):
+    query = {}
+    if status:
+        query["status"] = status
+    
+    orders = await db.orders.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Add restaurant and user info
+    for order in orders:
+        restaurant = await db.restaurants.find_one({"restaurant_id": order['restaurant_id']}, {"_id": 0, "name": 1})
+        order['restaurant_name'] = restaurant['name'] if restaurant else "Unknown"
+        
+        user = await db.users.find_one({"user_id": order['user_id']}, {"_id": 0, "name": 1, "email": 1})
+        order['customer'] = user or {"name": "Unknown", "email": "Unknown"}
+    
+    return orders
+
+@api_router.put("/admin/orders/{order_id}/status")
+async def admin_update_order_status(order_id: str, status_update: OrderStatusUpdate, current_user: dict = Depends(get_current_admin_user)):
+    valid_statuses = ["PLACED", "ACCEPTED", "PREPARING", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"]
+    if status_update.status not in valid_statuses:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    result = await db.orders.update_one(
+        {"order_id": order_id},
+        {"$set": {
+            "status": status_update.status,
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            f"status_timestamps.{status_update.status}": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": "Order status updated"}
+
+# ============= ADMIN RESERVATION MANAGEMENT =============
+
+@api_router.get("/admin/reservations")
+async def admin_get_all_reservations(status: Optional[str] = None, current_user: dict = Depends(get_current_admin_user)):
+    query = {}
+    if status:
+        query["status"] = status
+    
+    reservations = await db.reservations.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Add restaurant and user info
+    for reservation in reservations:
+        restaurant = await db.restaurants.find_one({"restaurant_id": reservation['restaurant_id']}, {"_id": 0, "name": 1})
+        reservation['restaurant_name'] = restaurant['name'] if restaurant else "Unknown"
+        
+        user = await db.users.find_one({"user_id": reservation['user_id']}, {"_id": 0, "name": 1, "email": 1})
+        reservation['customer'] = user or {"name": "Unknown", "email": "Unknown"}
+    
+    return reservations
+
+@api_router.put("/admin/reservations/{reservation_id}/status")
+async def admin_update_reservation_status(reservation_id: str, status_update: ReservationStatusUpdate, current_user: dict = Depends(get_current_admin_user)):
+    valid_statuses = ["PENDING_PAYMENT", "CONFIRMED", "SEATED", "COMPLETED", "CANCELLED", "NO_SHOW"]
+    if status_update.status not in valid_statuses:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    result = await db.reservations.update_one(
+        {"reservation_id": reservation_id},
+        {"$set": {"status": status_update.status}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Reservation not found")
+    
+    return {"message": "Reservation status updated"}
+
+# ============= ADMIN USER MANAGEMENT =============
+
+@api_router.get("/admin/users")
+async def admin_get_all_users(role: Optional[str] = None, current_user: dict = Depends(get_current_admin_user)):
+    query = {}
+    if role:
+        query["role"] = role
+    
+    users = await db.users.find(query, {"_id": 0, "password_hash": 0}).to_list(1000)
+    
+    # Add stats for each user
+    for user in users:
+        if user['role'] == 'customer':
+            order_count = await db.orders.count_documents({"user_id": user['user_id']})
+            reservation_count = await db.reservations.count_documents({"user_id": user['user_id']})
+            user['order_count'] = order_count
+            user['reservation_count'] = reservation_count
+        elif user['role'] == 'restaurant':
+            restaurant = await db.restaurants.find_one({"owner_id": user['user_id']}, {"_id": 0, "name": 1, "restaurant_id": 1})
+            user['restaurant'] = restaurant
+    
+    return users
+
+@api_router.put("/admin/users/{user_id}/status")
+async def admin_update_user_status(user_id: str, request: Request, current_user: dict = Depends(get_current_admin_user)):
+    body = await request.json()
+    status = body.get('status')  # 'active', 'suspended'
+    
+    if status not in ['active', 'suspended']:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    result = await db.users.update_one(
+        {"user_id": user_id},
+        {"$set": {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": f"User {status} successfully"}
+
+@api_router.delete("/admin/users/{user_id}")
+async def admin_delete_user(user_id: str, current_user: dict = Depends(get_current_admin_user)):
+    user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user['role'] == 'admin':
+        raise HTTPException(status_code=400, detail="Cannot delete admin user")
+    
+    # Delete user
+    await db.users.delete_one({"user_id": user_id})
+    
+    # If restaurant owner, delete their restaurant too
+    if user['role'] == 'restaurant':
+        restaurant = await db.restaurants.find_one({"owner_id": user_id}, {"_id": 0})
+        if restaurant:
+            await db.restaurants.delete_one({"restaurant_id": restaurant['restaurant_id']})
+            await db.menu_categories.delete_many({"restaurant_id": restaurant['restaurant_id']})
+            await db.menu_items.delete_many({"restaurant_id": restaurant['restaurant_id']})
+    
+    return {"message": "User deleted successfully"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
