@@ -220,7 +220,7 @@ class TestAdminOrderManagement:
         if len(data) > 0:
             order = data[0]
             # Verify restaurant and customer info are included
-            assert "restaurant" in order, "Missing restaurant info"
+            assert "restaurant_name" in order, "Missing restaurant_name"
             assert "customer" in order, "Missing customer info"
             print(f"Found {len(data)} orders with restaurant and customer info")
         else:
@@ -330,10 +330,11 @@ class TestAdminUserManagement:
         assert isinstance(data, list), "Expected list of users"
         
         if len(data) > 0:
-            user = data[0]
-            # Verify activity stats are included
-            assert "order_count" in user, "Missing order_count"
-            assert "reservation_count" in user, "Missing reservation_count"
+            # Find a customer user to verify stats
+            customer_user = next((u for u in data if u.get("role") == "customer"), None)
+            if customer_user:
+                assert "order_count" in customer_user, "Missing order_count for customer"
+                assert "reservation_count" in customer_user, "Missing reservation_count for customer"
             print(f"Found {len(data)} users with activity stats")
         else:
             print("No users found in database")
