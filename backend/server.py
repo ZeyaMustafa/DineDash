@@ -278,6 +278,13 @@ async def get_current_restaurant_user(credentials: HTTPAuthorizationCredentials 
         raise HTTPException(status_code=403, detail="Restaurant access required")
     return payload
 
+async def get_current_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+    payload = verify_token(token)
+    if payload.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return payload
+
 # ============= NOTIFICATION HELPERS =============
 
 async def send_email_notification(recipient_email: str, subject: str, html_content: str):
